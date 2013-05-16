@@ -6,6 +6,7 @@ import javax.microedition.khronos.opengles.GL10;
 import sdu.edu.learn.R;
 import sdu.edu.learn.obj.Cube;
 import sdu.edu.learn.obj.Polygon;
+import sdu.edu.learn.obj.Sphere;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,35 +23,39 @@ public class Scene implements Renderer {
 	Polygon p;
 	Cube c;
 
+	Sphere s = (Sphere) new Sphere(new float[] { 0, 0, 0 }, 1);
+
+
 	int[] textures = new int[10];
 
 	public Scene(Context parent) {
 		this.parent = parent;
-		p = new Polygon(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
-				1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, });
-		p.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
-
-		c = new Cube(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f, 1.0f,
-				1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
-
-				1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -2.0f, 1.0f,
-				-1.0f, -2.0f,
-
-				-1.0f, 1.0f, -2.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, -2.0f, 1.0f,
-				1.0f, 0.0f,
-
-				1.0f, 1.0f, -2.0f, 1.0f, -1.0f, -2.0f, -1.0f, 1.0f, -2.0f,
-				-1.0f, -1.0f, -2.0f,
-
-				-1.0f, 1.0f, -2.0f, -1.0f, -1.0f, -2.0f, -1.0f, 1.0f, 0.0f,
-				-1.0f, -1.0f, 0.0f,
-
-				-1.0f, -1.0f, 0.0f, -1.0f, -1.0f, -2.0f, 1.0f, -1.0f, 0.0f,
-				1.0f, -1.0f, -2.0f });
-		c.setTextureCoordinates(new float[] { 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0,
-				1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1,
-				0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1 });
-		c.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
+		/*
+		 * p = new Polygon(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
+		 * 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, });
+		 * p.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
+		 * 
+		 * c = new Cube(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
+		 * 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
+		 * 
+		 * 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -2.0f, 1.0f, -1.0f,
+		 * -2.0f,
+		 * 
+		 * -1.0f, 1.0f, -2.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, -2.0f, 1.0f, 1.0f,
+		 * 0.0f,
+		 * 
+		 * 1.0f, 1.0f, -2.0f, 1.0f, -1.0f, -2.0f, -1.0f, 1.0f, -2.0f, -1.0f,
+		 * -1.0f, -2.0f,
+		 * 
+		 * -1.0f, 1.0f, -2.0f, -1.0f, -1.0f, -2.0f, -1.0f, 1.0f, 0.0f, -1.0f,
+		 * -1.0f, 0.0f,
+		 * 
+		 * -1.0f, -1.0f, 0.0f, -1.0f, -1.0f, -2.0f, 1.0f, -1.0f, 0.0f, 1.0f,
+		 * -1.0f, -2.0f }); c.setTextureCoordinates(new float[] { 0, 0, 0, 1, 1,
+		 * 0, 1, 1, 0, 0, 0,1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1,
+		 * 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1 });
+		 * c.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
+		 */
 
 	}
 
@@ -80,7 +85,8 @@ public class Scene implements Renderer {
 		gl.glLoadIdentity();
 		gl.glTranslatef(0, 0, -4);
 		// p.onDraw(gl);
-		c.onDraw(gl);
+		//b.onDraw(gl);
+		s.onDraw(gl);
 	}
 
 	/**
@@ -116,13 +122,13 @@ public class Scene implements Renderer {
 		Bitmap bitmap = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.fn);
 		loadTexture(gl, bitmap);
-		c.setTextures(textures);
+		// c.setTextures(textures);
 	}
 
 	public boolean onTouch(MotionEvent event) {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			c.rotateX(15);
+			// s.rotateX(15);
 			break;
 		}
 		return true;
