@@ -7,10 +7,12 @@ import java.util.ArrayList;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import sdu.edu.learn.scene.Ray;
+
 public class Sphere implements PolygonObject {
 
-	int vCount;
-	private float pi = 3.14159265357f;
+	private int vCount;
+	public static float pi = 3.14159265357f;
 	private float radius;
 	private float[] center;
 
@@ -39,34 +41,34 @@ public class Sphere implements PolygonObject {
 		for (float angleY = -pi / 2 + span; angleY <= pi / 2; angleY += span) {
 			for (float angleXoZ = 0; angleXoZ < 2 * pi; angleXoZ += span) {
 
-				float y = (float) Math.sin(angleY) * radius;
+				float y = (float) Math.sin(angleY) * radius + center[1];
 				float xoz = (float) Math.cos(angleY) * radius;
-				float x = (float) Math.sin(angleXoZ) * xoz;
-				float z = (float) Math.cos(angleXoZ) * xoz;
+				float x = (float) Math.sin(angleXoZ) * xoz + center[0];
+				float z = (float) Math.cos(angleXoZ) * xoz + center[2];
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
 
-				y = (float) Math.sin(angleY - span) * radius;
+				y = (float) Math.sin(angleY - span) * radius + center[1];
 				xoz = (float) Math.cos(angleY - span) * radius;
-				x = (float) Math.sin(angleXoZ) * xoz;
-				z = (float) Math.cos(angleXoZ) * xoz;
+				x = (float) Math.sin(angleXoZ) * xoz + center[0];
+				z = (float) Math.cos(angleXoZ) * xoz + center[2];
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
 
-				y = (float) Math.sin(angleY) * radius;
+				y = (float) Math.sin(angleY) * radius + center[1];
 				xoz = (float) Math.cos(angleY) * radius;
-				x = (float) Math.sin(angleXoZ + span) * xoz;
-				z = (float) Math.cos(angleXoZ + span) * xoz;
+				x = (float) Math.sin(angleXoZ + span) * xoz + center[0];
+				z = (float) Math.cos(angleXoZ + span) * xoz + center[2];
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
 
-				y = (float) Math.sin(angleY - span) * radius;
+				y = (float) Math.sin(angleY - span) * radius + center[1];
 				xoz = (float) Math.cos(angleY - span) * radius;
-				x = (float) Math.sin(angleXoZ + span) * xoz;
-				z = (float) Math.cos(angleXoZ + span) * xoz;
+				x = (float) Math.sin(angleXoZ + span) * xoz + center[0];
+				z = (float) Math.cos(angleXoZ + span) * xoz + center[2];
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
@@ -94,8 +96,16 @@ public class Sphere implements PolygonObject {
 	@Override
 	public void onDraw(GL10 gl) {
 		// TODO Auto-generated method stub
-		// gl.glRotatef(90, 1, 0, 0); // 沿x轴旋转
+		 gl.glRotatef(90, 1, 0, 0); // 沿x轴旋转
+		gl.glPushMatrix();
 
+		gl.glTranslatef(translateCoordinats[0], translateCoordinats[1],
+				translateCoordinats[2]);
+		gl.glTranslatef(center[0], center[1], center[2]);
+		gl.glRotatef(rotateAngles[0], 1, 0, 0);
+		gl.glRotatef(rotateAngles[1], 0, 1, 0);
+		gl.glRotatef(rotateAngles[2], 0, 0, 1);
+		gl.glScalef(scales[0], scales[1], scales[2]);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY); // 启用顶点坐标数组
 		// gl.glEnableClientState(GL10.GL_NORMAL_ARRAY); // 启用顶点向量数组
 
@@ -107,6 +117,8 @@ public class Sphere implements PolygonObject {
 		for (int i = 0; i < vCount; i++) {
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, i * 4, 4);
 		}
+		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+		gl.glPopMatrix();
 	}
 
 	@Override
@@ -155,6 +167,12 @@ public class Sphere implements PolygonObject {
 	public void scale(float xs, float ys, float zs) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public float[] intersect(Ray ray) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

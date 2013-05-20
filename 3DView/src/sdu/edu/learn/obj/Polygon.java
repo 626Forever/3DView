@@ -6,6 +6,8 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import sdu.edu.learn.scene.Ray;
+
 public class Polygon implements PolygonObject {
 	private int polygon_Type;
 	private int vertex_nums;
@@ -93,6 +95,12 @@ public class Polygon implements PolygonObject {
 	public void rotateZ(float angle) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public float[] intersect(Ray ray) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

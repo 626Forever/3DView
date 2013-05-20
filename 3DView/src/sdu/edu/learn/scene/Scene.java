@@ -1,5 +1,7 @@
 package sdu.edu.learn.scene;
 
+import java.util.Vector;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -22,40 +24,25 @@ public class Scene implements Renderer {
 
 	Polygon p;
 	Cube c;
-
-	Sphere s = (Sphere) new Sphere(new float[] { 0, 0, 0 }, 1);
-
+	Sphere s;
 
 	int[] textures = new int[10];
 
 	public Scene(Context parent) {
 		this.parent = parent;
-		/*
-		 * p = new Polygon(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
-		 * 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, });
-		 * p.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
-		 * 
-		 * c = new Cube(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
-		 * 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f,
-		 * 
-		 * 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 1.0f, 1.0f, -2.0f, 1.0f, -1.0f,
-		 * -2.0f,
-		 * 
-		 * -1.0f, 1.0f, -2.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, -2.0f, 1.0f, 1.0f,
-		 * 0.0f,
-		 * 
-		 * 1.0f, 1.0f, -2.0f, 1.0f, -1.0f, -2.0f, -1.0f, 1.0f, -2.0f, -1.0f,
-		 * -1.0f, -2.0f,
-		 * 
-		 * -1.0f, 1.0f, -2.0f, -1.0f, -1.0f, -2.0f, -1.0f, 1.0f, 0.0f, -1.0f,
-		 * -1.0f, 0.0f,
-		 * 
-		 * -1.0f, -1.0f, 0.0f, -1.0f, -1.0f, -2.0f, 1.0f, -1.0f, 0.0f, 1.0f,
-		 * -1.0f, -2.0f }); c.setTextureCoordinates(new float[] { 0, 0, 0, 1, 1,
-		 * 0, 1, 1, 0, 0, 0,1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1,
-		 * 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1 });
-		 * c.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
-		 */
+
+		// p = new Polygon(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
+		// 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, });
+		// p.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
+
+		c = new Cube(0, 0, -4);
+		c.setTextureCoordinates(new float[] { 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0,
+				1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1,
+				0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1 });
+		c.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
+		c.rotateX(45);
+		c.rotateY(45);
+		s = (Sphere) new Sphere(new float[] { 0, 0, 0 }, 1);
 
 	}
 
@@ -83,10 +70,19 @@ public class Scene implements Renderer {
 		// TODO Auto-generated method stub
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-		gl.glTranslatef(0, 0, -4);
 		// p.onDraw(gl);
-		//b.onDraw(gl);
-		s.onDraw(gl);
+		c.onDraw(gl);
+		updatePick();
+		// s.onDraw(gl);
+	}
+
+	public void updatePick() {
+		Ray ray = RayFactory.getRay();
+		if (ray.intersectWithSphere(c.getCenter(), c.getSphereRadius())) {
+			ray = c.invert(ray);
+//System.out.println(ray.getDirectVector()[0] + "  "+ ray.getDirectVector()[1] + "  "+ray.getDirectVector()[2] );
+			c.intersect(ray);
+		}
 	}
 
 	/**
@@ -96,14 +92,20 @@ public class Scene implements Renderer {
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		// TODO Auto-generated method stub
 		// Sets the current view port to the new size.
+		RayFactory.setViewPort(new float[] { 0, 0, width, height });
 		gl.glViewport(0, 0, width, height);
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
-		GLU.gluPerspective(gl, 90.0f, (float) width / (float) height, 0.1f,
-				100.0f);
+		float foxy = 90.0f;
+		float zNear = 0.1f;
+		float zFar = 100.0f;
+		GLU.gluPerspective(gl, foxy, (float) width / (float) height, zNear,
+				zFar);
+		RayFactory.setFoxy(foxy);
+		RayFactory.setzNear(zNear);
+		RayFactory.setzFar(zFar);
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-
 	}
 
 	/**
@@ -122,13 +124,17 @@ public class Scene implements Renderer {
 		Bitmap bitmap = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.fn);
 		loadTexture(gl, bitmap);
-		// c.setTextures(textures);
+		c.setTextures(textures);
 	}
 
 	public boolean onTouch(MotionEvent event) {
+		float x = event.getX();
+		float y = event.getY();
+		RayFactory.setTouchPostion(new float[] { x, y });
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
 			// s.rotateX(15);
+			// c.rotateX(15);
 			break;
 		}
 		return true;

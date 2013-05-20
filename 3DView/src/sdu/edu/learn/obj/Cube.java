@@ -3,20 +3,37 @@ package sdu.edu.learn.obj;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Vector;
 
 import javax.microedition.khronos.opengles.GL10;
+
+import sdu.edu.learn.scene.Ray;
 
 public class Cube implements PolygonObject {
 
 	private int polygon_Type;
 	private int textures[];
 
+	private float center[] = new float[3];
 	private float translateCoordinats[] = new float[3];
 	private float rotateAngles[] = new float[3];
 	private float scales[] = new float[3];
+	private float vertices[];
 
 	private FloatBuffer textCoordinats;
 	private FloatBuffer vertexs;
+
+	public Cube(float x, float y, float z) {
+		center[0] = x;
+		center[1] = y;
+		center[2] = z;
+		for (int i = 0; i < 3; i++) {
+			translateCoordinats[i] = 0;
+			rotateAngles[i] = 0;
+			scales[i] = 1;
+		}
+		init();
+	}
 
 	public Cube(float vs[]) {
 		// a float is 4 bytes, therefore we multiply the
@@ -33,6 +50,31 @@ public class Cube implements PolygonObject {
 		}
 	}
 
+	private void init() {
+		vertices = new float[] { -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+				1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
+
+				1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
+				-1.0f, -1.0f,
+
+				-1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
+				1.0f, 1.0f,
+
+				1.0f, 1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f,
+				-1.0f, -1.0f, -1.0f,
+
+				-1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
+				-1.0f, -1.0f, 1.0f,
+
+				-1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, 1.0f,
+				1.0f, -1.0f, -1.0f };
+		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
+		vbb.order(ByteOrder.nativeOrder());
+		vertexs = vbb.asFloatBuffer();
+		vertexs.put(vertices);
+		vertexs.position(0);
+	}
+
 	@Override
 	public void onDraw(GL10 gl) {
 		// TODO Auto-generated method stub
@@ -40,12 +82,15 @@ public class Cube implements PolygonObject {
 		gl.glEnable(GL10.GL_CULL_FACE);
 		gl.glCullFace(GL10.GL_BACK);
 		gl.glPushMatrix();
+
 		gl.glTranslatef(translateCoordinats[0], translateCoordinats[1],
 				translateCoordinats[2]);
-		gl.glRotatef(rotateAngles[0], 1, 0, 0);
-		gl.glRotatef(rotateAngles[1], 0, 1, 0);
+		gl.glTranslatef(center[0], center[1], center[2]);
 		gl.glRotatef(rotateAngles[2], 0, 0, 1);
+		gl.glRotatef(rotateAngles[1], 0, 1, 0);
+		gl.glRotatef(rotateAngles[0], 1, 0, 0);
 		gl.glScalef(scales[0], scales[1], scales[2]);
+
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glEnable(GL10.GL_TEXTURE_2D);
 		gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
@@ -128,6 +173,168 @@ public class Cube implements PolygonObject {
 	public void rotateZ(float angle) {
 		// TODO Auto-generated method stub
 		rotateAngles[2] += angle;
+	}
+
+	@Override
+	public float[] intersect(Ray ray) {
+		// TODO Auto-generated method stub
+		if (ray == null) {
+			return null;
+		}
+		boolean bfound = false;
+		float zDeapth = 0.0f;
+		float surfaceNum = -1;
+		float[] rayVector = ray.getDirectVector();
+		float location[] = new float[3];
+
+		Vertex v0, v1, v2, v3;
+
+		for (int i = 0; i < 6; i++) {
+			float v[] = new float[3];
+			v[0] = vertices[i * 12];
+			v[1] = vertices[i * 12 + 1];
+			v[2] = vertices[i * 12 + 2];
+			v0 = new Vertex(v);
+
+			v[0] = vertices[i * 12 + 3];
+			v[1] = vertices[i * 12 + 4];
+			v[2] = vertices[i * 12 + 5];
+			v1 = new Vertex(v);
+
+			v[0] = vertices[i * 12 + 6];
+			v[1] = vertices[i * 12 + 7];
+			v[2] = vertices[i * 12 + 8];
+			v2 = new Vertex(v);
+
+			v[0] = vertices[i * 12 + 9];
+			v[1] = vertices[i * 12 + 10];
+			v[2] = vertices[i * 12 + 11];
+			v3 = new Vertex(v);
+
+			if (ray.intersectWithPolygon(new Vertex[] { v0, v1, v2, v3 },
+					location)) {
+				if (!bfound) {
+					bfound = true;
+					zDeapth = location[2];
+					surfaceNum = i;
+				} else {
+					if (zDeapth < location[2]) {
+						zDeapth = location[2];
+						surfaceNum = i;
+					}
+				}
+			}
+
+		}
+		if (bfound) {
+			//System.out.println(surfaceNum);
+			return location;
+		} else
+			return null;
+	}
+
+	public Ray invert(Ray ray) {
+		float direct[] = ray.getDirectVector();
+		float origin[] = ray.getOriginVector();
+		// direct[0] -= translateCoordinats[0] + center[0];
+		// direct[1] -= translateCoordinats[1] + center[1];
+		// direct[2] -= translateCoordinats[2] + center[2];
+		origin[0] -= translateCoordinats[0] + center[0];
+		origin[1] -= translateCoordinats[1] + center[1];
+		origin[2] -= translateCoordinats[2] + center[2];
+
+		float rotateX = rotateAngles[0] / 180 * Sphere.pi;
+		float rotateY = rotateAngles[1] / 180 * Sphere.pi;
+		float rotateZ = rotateAngles[2] / 180 * Sphere.pi;
+
+		float directX = direct[0];
+		float directY = direct[1];
+		float directZ = direct[2];
+
+		float originX = origin[0];
+		float originY = origin[1];
+		float originZ = origin[2];
+
+		/**
+		 * ÈÆzÖáµ¹×ª
+		 */
+
+		direct[0] = (float) Math.cos(-rotateZ) * directX
+				- (float) Math.sin(-rotateZ) * directY;
+		direct[1] = (float) Math.sin(-rotateZ) * directX
+				+ (float) Math.cos(-rotateZ) * directY;
+
+		origin[0] = (float) Math.cos(-rotateZ) * originX
+				- (float) Math.sin(-rotateZ) * originY;
+		origin[1] = (float) Math.sin(-rotateZ) * originX
+				+ (float) Math.cos(-rotateZ) * originY;
+
+		directX = direct[0];
+		directY = direct[1];
+		directZ = direct[2];
+
+		originX = origin[0];
+		originY = origin[1];
+		originZ = origin[2];
+
+		/**
+		 * ÈÆyÖáµ¹×ª
+		 */
+		direct[0] = (float) Math.cos(-rotateY) * directX
+				+ (float) Math.sin(-rotateY) * directZ;
+		direct[2] = (float) -Math.sin(-rotateY) * directX
+				+ (float) Math.cos(-rotateY) * directZ;
+
+		origin[0] = (float) Math.cos(-rotateY) * originX
+				+ (float) Math.sin(-rotateY) * originZ;
+		origin[2] = (float) -Math.sin(-rotateY) * originX
+				+ (float) Math.cos(-rotateY) * originZ;
+
+		directX = direct[0];
+		directY = direct[1];
+		directZ = direct[2];
+
+		originX = origin[0];
+		originY = origin[1];
+		originZ = origin[2];
+
+		/**
+		 * ÈÆxÖáµ¹×ª
+		 */
+		direct[1] = (float) Math.cos(-rotateX) * directY
+				- (float) Math.sin(-rotateX) * directZ;
+		direct[2] = (float) Math.sin(-rotateX) * directY
+				+ (float) Math.cos(-rotateX) * directZ;
+
+		origin[1] = (float) Math.cos(-rotateX) * originY
+				- (float) Math.sin(-rotateX) * originZ;
+		origin[2] = (float) Math.sin(-rotateX) * originY
+				+ (float) Math.cos(-rotateX) * originZ;
+
+		direct[0] = direct[0] / scales[0];
+		direct[1] = direct[1] / scales[1];
+		direct[2] = direct[2] / scales[2];
+
+		origin[0] = origin[0] / scales[0];
+		origin[1] = origin[1] / scales[1];
+		origin[2] = origin[2] / scales[2];
+
+		ray.setDirectVector(direct);
+		ray.setOriginVector(origin);
+		return ray;
+	}
+
+	public float[] getCenter() {
+		float c[] = new float[3];
+		c[0] = center[0] + translateCoordinats[0];
+		c[1] = center[1] + translateCoordinats[1];
+		c[2] = center[2] + translateCoordinats[2];
+		return c;
+	}
+
+	public float getSphereRadius() {
+		float r = (float) Math.sqrt(3);
+		return r;
 	}
 
 }

@@ -2,6 +2,8 @@ package sdu.edu.learn.obj;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import sdu.edu.learn.scene.Ray;
+
 public interface PolygonObject {
 	public void onDraw(GL10 gl);
 
@@ -20,5 +22,7 @@ public interface PolygonObject {
 	public void rotateZ(float angle);
 
 	public void scale(float xs, float ys, float zs);
+
+	public float[] intersect(Ray ray);
 
 }
