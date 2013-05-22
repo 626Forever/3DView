@@ -9,6 +9,17 @@ public class RayFactory {
 	public static float viewPort[] = new float[4];
 	public static float touchPostion[] = new float[2];
 
+	public static boolean pickful = false;
+	
+
+	public static boolean isPickful() {
+		return pickful;
+	}
+
+	public static void setPickful(boolean pick) {
+		RayFactory.pickful = pick;
+	}
+
 	public static float getFoxy() {
 		return foxy;
 	}

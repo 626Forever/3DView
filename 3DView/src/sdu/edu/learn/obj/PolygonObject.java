@@ -23,6 +23,6 @@ public interface PolygonObject {
 
 	public void scale(float xs, float ys, float zs);
 
-	public float[] intersect(Ray ray);
+	public int intersect(Ray ray);
 
 }

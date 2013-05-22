@@ -128,13 +128,30 @@ public class Ray {
 		vec3[1] = locations[1] - y0;
 		vec3[2] = locations[2] - z0;
 
-		float a = (vec2[1] * vec3[0] - vec2[0] * vec3[1])
-				/ (vec1[0] * vec2[1] - vec2[0] * vec1[1]);
+		float a = 0, b = 0;
 
-		float b = (vec1[1] * vec3[0] - vec1[0] * vec3[1])
-				/ (vec1[1] * vec2[0] - vec2[1] * vec1[0]);
+		if (vec3[2] == 0) {
+			a = (vec2[1] * vec3[0] - vec2[0] * vec3[1])
+					/ (vec1[0] * vec2[1] - vec2[0] * vec1[1]);
 
-		if (a >= 0 && a <= 1 && b >= 0 && b <= 1) {
+			b = (vec1[1] * vec3[0] - vec1[0] * vec3[1])
+					/ (vec1[1] * vec2[0] - vec2[1] * vec1[0]);
+		}
+		if (vec3[0] == 0) {
+			a = (vec2[1] * vec3[2] - vec2[2] * vec3[1])
+					/ (vec1[2] * vec2[1] - vec2[2] * vec1[1]);
+
+			b = (vec1[1] * vec3[2] - vec1[2] * vec3[1])
+					/ (vec1[1] * vec2[2] - vec2[1] * vec1[2]);
+		}
+		if (vec3[1] == 0) {
+			a = (vec2[0] * vec3[2] - vec2[2] * vec3[0])
+					/ (vec1[2] * vec2[0] - vec2[2] * vec1[0]);
+
+			b = (vec1[0] * vec3[2] - vec1[2] * vec3[0])
+					/ (vec1[0] * vec2[2] - vec2[0] * vec1[2]);
+		}
+		if (a > 0 && a < 1 && b > 0 && b < 1) {
 			return true;
 		} else {
 			locations = null;

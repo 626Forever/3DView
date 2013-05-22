@@ -77,11 +77,21 @@ public class Scene implements Renderer {
 	}
 
 	public void updatePick() {
+		if (!RayFactory.isPickful()) {
+			return;
+		}
 		Ray ray = RayFactory.getRay();
 		if (ray.intersectWithSphere(c.getCenter(), c.getSphereRadius())) {
 			ray = c.invert(ray);
-//System.out.println(ray.getDirectVector()[0] + "  "+ ray.getDirectVector()[1] + "  "+ray.getDirectVector()[2] );
-			c.intersect(ray);
+			// System.out.println(ray.getDirectVector()[0] + "  "+
+			// ray.getDirectVector()[1] + "  "+ray.getDirectVector()[2] );
+			int face = c.intersect(ray);
+			if (face != -1) {
+				c.setPicked(true);
+				System.out.println("picked");
+			}
+			// System.out.println(face);
+
 		}
 	}
 
@@ -133,10 +143,17 @@ public class Scene implements Renderer {
 		RayFactory.setTouchPostion(new float[] { x, y });
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			// s.rotateX(15);
-			// c.rotateX(15);
+			RayFactory.setPickful(true);
 			break;
+		case MotionEvent.ACTION_UP:
+			RayFactory.setPickful(false);
+			break;
+		case MotionEvent.ACTION_MOVE:
+			if (c.isPicked()) {
+				c.move(RayFactory.getRay());
+			}
 		}
+
 		return true;
 
 	}

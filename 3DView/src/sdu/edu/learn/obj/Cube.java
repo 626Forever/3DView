@@ -8,8 +8,11 @@ import java.util.Vector;
 import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
+import sdu.edu.learn.scene.RayFactory;
 
 public class Cube implements PolygonObject {
+
+	private boolean picked = false;
 
 	private int polygon_Type;
 	private int textures[];
@@ -144,9 +147,9 @@ public class Cube implements PolygonObject {
 	@Override
 	public void translate(float x, float y, float z) {
 		// TODO Auto-generated method stub
-		translateCoordinats[0] += x;
-		translateCoordinats[1] += y;
-		translateCoordinats[2] += z;
+		translateCoordinats[0] = x;
+		translateCoordinats[1] = y;
+		translateCoordinats[2] = z;
 	}
 
 	@Override
@@ -176,14 +179,14 @@ public class Cube implements PolygonObject {
 	}
 
 	@Override
-	public float[] intersect(Ray ray) {
+	public int intersect(Ray ray) {
 		// TODO Auto-generated method stub
 		if (ray == null) {
-			return null;
+			return -1;
 		}
 		boolean bfound = false;
 		float zDeapth = 0.0f;
-		float surfaceNum = -1;
+		int surfaceNum = -1;
 		float[] rayVector = ray.getDirectVector();
 		float location[] = new float[3];
 
@@ -227,10 +230,9 @@ public class Cube implements PolygonObject {
 
 		}
 		if (bfound) {
-			//System.out.println(surfaceNum);
-			return location;
+			return surfaceNum;
 		} else
-			return null;
+			return -1;
 	}
 
 	public Ray invert(Ray ray) {
@@ -337,4 +339,26 @@ public class Cube implements PolygonObject {
 		return r;
 	}
 
+	public boolean isPicked() {
+		return picked;
+	}
+
+	public void setPicked(boolean picked) {
+		this.picked = picked;
+	}
+
+	/**
+	 * 移动到ray指向的对应位置，其中z坐标无变化
+	 * 
+	 * @param ray
+	 */
+	public void move(Ray ray) {
+		float direct[] = ray.getDirectVector();
+		float origin[] = ray.getOriginVector();
+		float a = (center[2] - origin[2]) / direct[2];
+		float x = a * direct[0] + origin[0] - center[0];
+		float y = a * direct[1] + origin[1] - center[1];
+		float z = 0;
+		this.translate(x, y, z);
+	}
 }

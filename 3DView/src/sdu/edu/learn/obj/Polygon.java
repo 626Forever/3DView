@@ -98,9 +98,9 @@ public class Polygon implements PolygonObject {
 	}
 
 	@Override
-	public float[] intersect(Ray ray) {
+	public int intersect(Ray ray) {
 		// TODO Auto-generated method stub
-		return null;
+		return -1;
 	}
 
 }
