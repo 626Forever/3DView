@@ -34,9 +34,9 @@ public class Scene implements Renderer {
 	// 定义漫射光
 	private FloatBuffer lightDiffuse = FloatBuffer.wrap(new float[] { 1.0f,
 			1.0f, 1.0f, 1.0f });
-	
+
 	private FloatBuffer lightSpecular = FloatBuffer.wrap(new float[] { 1.0f,
-				1.0f, 1.0f, 1.0f });
+			1.0f, 1.0f, 1.0f });
 	// 定义光源的位置
 	private FloatBuffer lightPosition = FloatBuffer.wrap(new float[] { 0.0f,
 			5.0f, 5.0f, 1.0f });
@@ -86,8 +86,8 @@ public class Scene implements Renderer {
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		// TODO Auto-generated method stub
-		//开启光源    
-		gl.glEnable(GL10.GL_LIGHTING);  
+		// 开启光源
+		gl.glEnable(GL10.GL_LIGHTING);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		// p.onDraw(gl);
@@ -103,8 +103,8 @@ public class Scene implements Renderer {
 			return;
 		}
 		boolean found = false;
-		float zDeapth = 0.0f;
-		int objLoc;
+		float zDeapth = -10000f;
+		int objLoc = 0;
 		Ray ray = RayFactory.getRay();
 		for (int i = 0; i < objs.size(); i++) {
 			Multilateral m = objs.get(i);
@@ -123,9 +123,7 @@ public class Scene implements Renderer {
 								objLoc = i;
 							}
 						}
-						m.setPicked(true);
 					}
-
 				}
 				if (m instanceof Sphere) {
 					if (!found) {
@@ -138,9 +136,12 @@ public class Scene implements Renderer {
 							objLoc = i;
 						}
 					}
-					m.setPicked(true);
 				}
 			}
+		}
+
+		if (zDeapth != -10000f) {
+			objs.get(objLoc).setPicked(true);
 		}
 	}
 
@@ -180,16 +181,16 @@ public class Scene implements Renderer {
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 
-		//设置环境光    
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, lightAmbient);    
-		//设置漫射光    
+		// 设置环境光
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, lightAmbient);
+		// 设置漫射光
 		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, lightDiffuse);
 		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_SPECULAR, lightSpecular);
-		//设置光源的位置    
-		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, lightPosition);    
-		//开启ID号为GL_LIGHT1的光源    
-		gl.glEnable(GL10.GL_LIGHT1);    
-		
+		// 设置光源的位置
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, lightPosition);
+		// 开启ID号为GL_LIGHT1的光源
+		gl.glEnable(GL10.GL_LIGHT1);
+
 		Bitmap bitmap = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.fn);
 		loadTexture(gl, bitmap);

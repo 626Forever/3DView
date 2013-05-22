@@ -109,12 +109,12 @@ public class Sphere extends Multilateral {
 		gl.glRotatef(rotateAngles[2], 0, 0, 1);
 		gl.glScalef(scales[0], scales[1], scales[2]);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY); // 启用顶点坐标数组
-		// gl.glEnableClientState(GL10.GL_NORMAL_ARRAY); // 启用顶点向量数组
+		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY); // 启用顶点向量数组
 
 		// 为画笔指定顶点坐标数据
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexs);
 		// 为画笔指定顶点向量数据
-		// gl.glNormalPointer(GL10.GL_FLOAT, 0, vertexs);
+		gl.glNormalPointer(GL10.GL_FLOAT, 0, vertexs);
 		// 绘制图形
 		for (int i = 0; i < vCount; i++) {
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, i * 4, 4);
