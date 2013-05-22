@@ -1,7 +1,7 @@
 package sdu.edu.learn.scene;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -10,7 +10,6 @@ import sdu.edu.learn.R;
 import sdu.edu.learn.obj.Cube;
 import sdu.edu.learn.obj.Multilateral;
 import sdu.edu.learn.obj.Polygon;
-import sdu.edu.learn.obj.PolygonObject;
 import sdu.edu.learn.obj.Sphere;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -28,6 +27,19 @@ public class Scene implements Renderer {
 	Polygon p;
 
 	int[] textures = new int[10];
+
+	// 定义环境光
+	private FloatBuffer lightAmbient = FloatBuffer.wrap(new float[] { 1.0f,
+			1.0f, 1.0f, 1.0f });
+	// 定义漫射光
+	private FloatBuffer lightDiffuse = FloatBuffer.wrap(new float[] { 1.0f,
+			1.0f, 1.0f, 1.0f });
+	
+	private FloatBuffer lightSpecular = FloatBuffer.wrap(new float[] { 1.0f,
+				1.0f, 1.0f, 1.0f });
+	// 定义光源的位置
+	private FloatBuffer lightPosition = FloatBuffer.wrap(new float[] { 0.0f,
+			5.0f, 5.0f, 1.0f });
 
 	public Scene(Context parent) {
 		this.parent = parent;
@@ -74,6 +86,8 @@ public class Scene implements Renderer {
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		// TODO Auto-generated method stub
+		//开启光源    
+		gl.glEnable(GL10.GL_LIGHTING);  
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		// p.onDraw(gl);
@@ -166,6 +180,16 @@ public class Scene implements Renderer {
 		gl.glDepthFunc(GL10.GL_LEQUAL);
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 
+		//设置环境光    
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_AMBIENT, lightAmbient);    
+		//设置漫射光    
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_DIFFUSE, lightDiffuse);
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_SPECULAR, lightSpecular);
+		//设置光源的位置    
+		gl.glLightfv(GL10.GL_LIGHT1, GL10.GL_POSITION, lightPosition);    
+		//开启ID号为GL_LIGHT1的光源    
+		gl.glEnable(GL10.GL_LIGHT1);    
+		
 		Bitmap bitmap = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.fn);
 		loadTexture(gl, bitmap);
