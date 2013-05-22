@@ -103,4 +103,32 @@ public class Polygon implements PolygonObject {
 		return -1;
 	}
 
+	@Override
+	public float[] getCenter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float getSphereRadius() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public boolean isPicked() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void setPicked(boolean picked) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTextures(int[] textures) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -9,7 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
 
-public class Sphere implements PolygonObject {
+public class Sphere extends Multilateral {
 
 	private int vCount;
 	public static float pi = 3.14159265357f;
@@ -26,7 +26,10 @@ public class Sphere implements PolygonObject {
 
 	public Sphere(float[] center, float radius) {
 		this.radius = radius;
-		this.center = center;
+		this.center = new float[3];
+		this.center[0] = center[0];
+		this.center[1] = center[1];
+		this.center[2] = center[2];
 		for (int i = 0; i < 3; i++) {
 			translateCoordinats[i] = 0;
 			rotateAngles[i] = 0;
@@ -41,34 +44,34 @@ public class Sphere implements PolygonObject {
 		for (float angleY = -pi / 2 + span; angleY <= pi / 2; angleY += span) {
 			for (float angleXoZ = 0; angleXoZ < 2 * pi; angleXoZ += span) {
 
-				float y = (float) Math.sin(angleY) * radius + center[1];
+				float y = (float) Math.sin(angleY) * radius;
 				float xoz = (float) Math.cos(angleY) * radius;
-				float x = (float) Math.sin(angleXoZ) * xoz + center[0];
-				float z = (float) Math.cos(angleXoZ) * xoz + center[2];
+				float x = (float) Math.sin(angleXoZ) * xoz;
+				float z = (float) Math.cos(angleXoZ) * xoz;
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
 
-				y = (float) Math.sin(angleY - span) * radius + center[1];
+				y = (float) Math.sin(angleY - span) * radius;
 				xoz = (float) Math.cos(angleY - span) * radius;
-				x = (float) Math.sin(angleXoZ) * xoz + center[0];
-				z = (float) Math.cos(angleXoZ) * xoz + center[2];
+				x = (float) Math.sin(angleXoZ) * xoz;
+				z = (float) Math.cos(angleXoZ) * xoz;
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
 
-				y = (float) Math.sin(angleY) * radius + center[1];
+				y = (float) Math.sin(angleY) * radius;
 				xoz = (float) Math.cos(angleY) * radius;
-				x = (float) Math.sin(angleXoZ + span) * xoz + center[0];
-				z = (float) Math.cos(angleXoZ + span) * xoz + center[2];
+				x = (float) Math.sin(angleXoZ + span) * xoz;
+				z = (float) Math.cos(angleXoZ + span) * xoz;
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
 
-				y = (float) Math.sin(angleY - span) * radius + center[1];
+				y = (float) Math.sin(angleY - span) * radius;
 				xoz = (float) Math.cos(angleY - span) * radius;
-				x = (float) Math.sin(angleXoZ + span) * xoz + center[0];
-				z = (float) Math.cos(angleXoZ + span) * xoz + center[2];
+				x = (float) Math.sin(angleXoZ + span) * xoz;
+				z = (float) Math.cos(angleXoZ + span) * xoz;
 				alVertex.add(x);
 				alVertex.add(y);
 				alVertex.add(z);
@@ -96,9 +99,8 @@ public class Sphere implements PolygonObject {
 	@Override
 	public void onDraw(GL10 gl) {
 		// TODO Auto-generated method stub
-		 gl.glRotatef(90, 1, 0, 0); // ÑØxÖáÐý×ª
-		gl.glPushMatrix();
 
+		gl.glPushMatrix();
 		gl.glTranslatef(translateCoordinats[0], translateCoordinats[1],
 				translateCoordinats[2]);
 		gl.glTranslatef(center[0], center[1], center[2]);
@@ -142,25 +144,27 @@ public class Sphere implements PolygonObject {
 	@Override
 	public void translate(float x, float y, float z) {
 		// TODO Auto-generated method stub
-
+		this.translateCoordinats[0] = x;
+		this.translateCoordinats[1] = y;
+		this.translateCoordinats[2] = z;
 	}
 
 	@Override
 	public void rotateX(float angle) {
 		// TODO Auto-generated method stub
-
+		this.rotateAngles[0] += angle;
 	}
 
 	@Override
 	public void rotateY(float angle) {
 		// TODO Auto-generated method stub
-
+		this.rotateAngles[1] += angle;
 	}
 
 	@Override
 	public void rotateZ(float angle) {
 		// TODO Auto-generated method stub
-
+		this.rotateAngles[2] += angle;
 	}
 
 	@Override
@@ -175,4 +179,25 @@ public class Sphere implements PolygonObject {
 		return -1;
 	}
 
+	public float[] getCenter() {
+		float c[] = new float[3];
+		c[0] = center[0] + translateCoordinats[0];
+		c[1] = center[1] + translateCoordinats[1];
+		c[2] = center[2] + translateCoordinats[2];
+		return c;
+	}
+
+	public float getSphereRadius() {
+		return this.radius;
+	}
+
+	public void move(Ray ray) {
+		float direct[] = ray.getDirectVector();
+		float origin[] = ray.getOriginVector();
+		float a = (center[2] - origin[2]) / direct[2];
+		float x = a * direct[0] + origin[0] - center[0];
+		float y = a * direct[1] + origin[1] - center[1];
+		float z = 0;
+		this.translate(x, y, z);
+	}
 }

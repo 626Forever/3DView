@@ -1,5 +1,6 @@
 package sdu.edu.learn.scene;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -7,7 +8,9 @@ import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.R;
 import sdu.edu.learn.obj.Cube;
+import sdu.edu.learn.obj.Multilateral;
 import sdu.edu.learn.obj.Polygon;
+import sdu.edu.learn.obj.PolygonObject;
 import sdu.edu.learn.obj.Sphere;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,29 +23,32 @@ import android.view.MotionEvent;
 
 @SuppressLint("WrongCall")
 public class Scene implements Renderer {
-	Context parent;
-
+	private Context parent;
+	private ArrayList<Multilateral> objs = new ArrayList<Multilateral>();
 	Polygon p;
-	Cube c;
-	Sphere s;
 
 	int[] textures = new int[10];
 
 	public Scene(Context parent) {
 		this.parent = parent;
 
-		// p = new Polygon(new float[] { -1.0f, 1.0f, 0.0f, -1.0f, -1.0f, 0.0f,
-		// 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, });
-		// p.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
-
-		c = new Cube(0, 0, -4);
-		c.setTextureCoordinates(new float[] { 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0,
-				1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1,
-				0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1 });
-		c.setPolygonTye(GL10.GL_TRIANGLE_STRIP);
+		Cube c = new Cube(0, 0, -4);
 		c.rotateX(45);
 		c.rotateY(45);
-		s = (Sphere) new Sphere(new float[] { 0, 0, 0 }, 1);
+		c.scale(0.5f, 0.5f, 0.5f);
+		objs.add(c);
+
+		c = new Cube(3, -1, -8);
+		c.rotateX(65);
+		c.rotateY(75);
+		c.rotateZ(109);
+		c.scale(0.5f, 0.5f, 0.5f);
+		objs.add(c);
+
+		Sphere s = new Sphere(new float[] { 1, 1, -4 }, 0.4f);
+		objs.add(s);
+		s = new Sphere(new float[] { -5, -4, -10 }, 0.4f);
+		objs.add(s);
 
 	}
 
@@ -71,27 +77,56 @@ public class Scene implements Renderer {
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		// p.onDraw(gl);
-		c.onDraw(gl);
+		for (int i = 0; i < objs.size(); i++) {
+			objs.get(i).onDraw(gl);
+		}
 		updatePick();
-		// s.onDraw(gl);
+
 	}
 
 	public void updatePick() {
 		if (!RayFactory.isPickful()) {
 			return;
 		}
+		boolean found = false;
+		float zDeapth = 0.0f;
+		int objLoc;
 		Ray ray = RayFactory.getRay();
-		if (ray.intersectWithSphere(c.getCenter(), c.getSphereRadius())) {
-			ray = c.invert(ray);
-			// System.out.println(ray.getDirectVector()[0] + "  "+
-			// ray.getDirectVector()[1] + "  "+ray.getDirectVector()[2] );
-			int face = c.intersect(ray);
-			if (face != -1) {
-				c.setPicked(true);
-				System.out.println("picked");
-			}
-			// System.out.println(face);
+		for (int i = 0; i < objs.size(); i++) {
+			Multilateral m = objs.get(i);
+			if (ray.intersectWithSphere(m.getCenter(), m.getSphereRadius())) {
+				if (m instanceof Cube) {
+					ray = ((Cube) m).invert(ray);
+					int face = m.intersect(ray);
+					if (face != -1) {
+						if (!found) {
+							found = true;
+							zDeapth = m.getCenter()[2];
+							objLoc = i;
+						} else {
+							if (zDeapth < m.getCenter()[2]) {
+								zDeapth = m.getCenter()[2];
+								objLoc = i;
+							}
+						}
+						m.setPicked(true);
+					}
 
+				}
+				if (m instanceof Sphere) {
+					if (!found) {
+						found = true;
+						zDeapth = m.getCenter()[2];
+						objLoc = i;
+					} else {
+						if (zDeapth < m.getCenter()[2]) {
+							zDeapth = m.getCenter()[2];
+							objLoc = i;
+						}
+					}
+					m.setPicked(true);
+				}
+			}
 		}
 	}
 
@@ -134,7 +169,9 @@ public class Scene implements Renderer {
 		Bitmap bitmap = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.fn);
 		loadTexture(gl, bitmap);
-		c.setTextures(textures);
+		for (int i = 0; i < objs.size(); i++) {
+			objs.get(i).setTextures(textures);
+		}
 	}
 
 	public boolean onTouch(MotionEvent event) {
@@ -147,11 +184,19 @@ public class Scene implements Renderer {
 			break;
 		case MotionEvent.ACTION_UP:
 			RayFactory.setPickful(false);
+			for (int i = 0; i < objs.size(); i++) {
+				objs.get(i).setPicked(false);
+			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			if (c.isPicked()) {
-				c.move(RayFactory.getRay());
+			for (int i = 0; i < objs.size(); i++) {
+				Multilateral m = objs.get(i);
+				if (m.isPicked()) {
+					m.move(RayFactory.getRay());
+					break;
+				}
 			}
+			break;
 		}
 
 		return true;

@@ -5,9 +5,12 @@ import javax.microedition.khronos.opengles.GL10;
 import sdu.edu.learn.scene.Ray;
 
 public interface PolygonObject {
+
 	public void onDraw(GL10 gl);
 
 	public void setVertexf(float vs[]);
+
+	public void setTextures(int[] textures);
 
 	public void setTextureCoordinates(float[] textureCoords);
 
@@ -24,5 +27,9 @@ public interface PolygonObject {
 	public void scale(float xs, float ys, float zs);
 
 	public int intersect(Ray ray);
+
+	public float[] getCenter();
+
+	public float getSphereRadius();
 
 }

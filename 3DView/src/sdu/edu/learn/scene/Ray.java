@@ -55,10 +55,13 @@ public class Ray {
 	}
 
 	public boolean intersectWithSphere(float[] SphereCenter, float SphereRadius) {
-		float distance = SphereCenter[0] * SphereCenter[0] + SphereCenter[1]
-				* SphereCenter[1] + SphereCenter[2] * SphereCenter[2];
-		float distance1 = directVector[0] * SphereCenter[0] + directVector[1]
-				* SphereCenter[1] + directVector[2] * SphereCenter[2];
+		float v1[] = new float[3];
+		v1[0] = SphereCenter[0] - origin[0];
+		v1[1] = SphereCenter[1] - origin[1];
+		v1[2] = SphereCenter[2] - origin[2];
+		float distance = v1[0] * v1[0] + v1[1] * v1[1] + v1[2] * v1[2];
+		float distance1 = directVector[0] * v1[0] + directVector[1] * v1[1]
+				+ directVector[2] * v1[2];
 		distance = distance
 				- distance1
 				* distance1

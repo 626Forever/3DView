@@ -3,18 +3,14 @@ package sdu.edu.learn.obj;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.util.Vector;
 
 import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
-import sdu.edu.learn.scene.RayFactory;
 
-public class Cube implements PolygonObject {
+public class Cube extends Multilateral {
 
-	private boolean picked = false;
-
-	private int polygon_Type;
+	private int polygon_Type = GL10.GL_TRIANGLE_STRIP;;
 	private int textures[];
 
 	private float center[] = new float[3];
@@ -22,6 +18,7 @@ public class Cube implements PolygonObject {
 	private float rotateAngles[] = new float[3];
 	private float scales[] = new float[3];
 	private float vertices[];
+	private float textureCoordinats[];
 
 	private FloatBuffer textCoordinats;
 	private FloatBuffer vertexs;
@@ -76,6 +73,18 @@ public class Cube implements PolygonObject {
 		vertexs = vbb.asFloatBuffer();
 		vertexs.put(vertices);
 		vertexs.position(0);
+
+		this.textureCoordinats = new float[] { 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0,
+				1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1,
+				0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1 };
+
+		ByteBuffer byteBuf = ByteBuffer
+				.allocateDirect(textureCoordinats.length * 4);
+		byteBuf.order(ByteOrder.nativeOrder());
+		textCoordinats = byteBuf.asFloatBuffer();
+		textCoordinats.put(textureCoordinats);
+		textCoordinats.position(0);
+
 	}
 
 	@Override
@@ -116,10 +125,11 @@ public class Cube implements PolygonObject {
 	@Override
 	public void setVertexf(float[] vs) {
 		// TODO Auto-generated method stub
-		ByteBuffer vbb = ByteBuffer.allocateDirect(vs.length * 4);
+		this.vertices = vs;
+		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
 		vertexs = vbb.asFloatBuffer();
-		vertexs.put(vs);
+		vertexs.put(vertices);
 		vertexs.position(0);
 	}
 
@@ -129,11 +139,12 @@ public class Cube implements PolygonObject {
 
 		// float is 4 bytes, therefore we multiply the number if
 		// vertices with 4.
+		this.textureCoordinats = textureCoords;
 		ByteBuffer byteBuf = ByteBuffer
-				.allocateDirect(textureCoords.length * 4);
+				.allocateDirect(textureCoordinats.length * 4);
 		byteBuf.order(ByteOrder.nativeOrder());
 		textCoordinats = byteBuf.asFloatBuffer();
-		textCoordinats.put(textureCoords);
+		textCoordinats.put(textureCoordinats);
 		textCoordinats.position(0);
 
 	}
@@ -337,14 +348,6 @@ public class Cube implements PolygonObject {
 	public float getSphereRadius() {
 		float r = (float) Math.sqrt(3);
 		return r;
-	}
-
-	public boolean isPicked() {
-		return picked;
-	}
-
-	public void setPicked(boolean picked) {
-		this.picked = picked;
 	}
 
 	/**
