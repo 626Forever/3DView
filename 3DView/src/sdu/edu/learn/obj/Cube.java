@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
+import sdu.edu.learn.scene.RayFactory;
 
 public class Cube extends Multilateral {
 
@@ -198,7 +199,6 @@ public class Cube extends Multilateral {
 		boolean bfound = false;
 		float zDeapth = 0.0f;
 		int surfaceNum = -1;
-		float[] rayVector = ray.getDirectVector();
 		float location[] = new float[3];
 
 		Vertex v0, v1, v2, v3;
@@ -247,11 +247,10 @@ public class Cube extends Multilateral {
 	}
 
 	public Ray invert(Ray ray) {
+		Ray ray1 = RayFactory.getRay();
 		float direct[] = ray.getDirectVector();
 		float origin[] = ray.getOriginVector();
-		// direct[0] -= translateCoordinats[0] + center[0];
-		// direct[1] -= translateCoordinats[1] + center[1];
-		// direct[2] -= translateCoordinats[2] + center[2];
+		
 		origin[0] -= translateCoordinats[0] + center[0];
 		origin[1] -= translateCoordinats[1] + center[1];
 		origin[2] -= translateCoordinats[2] + center[2];
@@ -332,9 +331,9 @@ public class Cube extends Multilateral {
 		origin[1] = origin[1] / scales[1];
 		origin[2] = origin[2] / scales[2];
 
-		ray.setDirectVector(direct);
-		ray.setOriginVector(origin);
-		return ray;
+		ray1.setDirectVector(direct);
+		ray1.setOriginVector(origin);
+		return ray1;
 	}
 
 	public float[] getCenter() {

@@ -182,7 +182,11 @@ public class Sphere extends Multilateral {
 	@Override
 	public int intersect(Ray ray) {
 		// TODO Auto-generated method stub
-		return -1;
+		return 0;
+	}
+	
+	public Ray invert(Ray ray){
+		return ray;
 	}
 
 	public float[] getCenter() {

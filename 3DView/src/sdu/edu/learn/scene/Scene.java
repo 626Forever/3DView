@@ -38,8 +38,8 @@ public class Scene implements Renderer {
 	private FloatBuffer lightSpecular = FloatBuffer.wrap(new float[] { 1.0f,
 			1.0f, 1.0f, 1.0f });
 	// 定义光源的位置
-	private FloatBuffer lightPosition = FloatBuffer.wrap(new float[] { 0.0f,
-			5.0f, 5.0f, 1.0f });
+	private FloatBuffer lightPosition = FloatBuffer.wrap(new float[] { 2.0f,
+			4.0f, 0.0f, 1.0f });
 
 	public Scene(Context parent) {
 		this.parent = parent;
@@ -107,27 +107,14 @@ public class Scene implements Renderer {
 		boolean found = false;
 		float zDeapth = -10000f;
 		int objLoc = 0;
-		Ray ray = RayFactory.getRay();
+		final Ray ray = RayFactory.getRay();
 		for (int i = 0; i < objs.size(); i++) {
 			Multilateral m = objs.get(i);
 			if (ray.intersectWithSphere(m.getCenter(), m.getSphereRadius())) {
-				if (m instanceof Cube) {
-					ray = ((Cube) m).invert(ray);
-					int face = m.intersect(ray);
-					if (face != -1) {
-						if (!found) {
-							found = true;
-							zDeapth = m.getCenter()[2];
-							objLoc = i;
-						} else {
-							if (zDeapth < m.getCenter()[2]) {
-								zDeapth = m.getCenter()[2];
-								objLoc = i;
-							}
-						}
-					}
-				}
-				if (m instanceof Sphere) {
+				System.out.println(i);
+				Ray ray1 = m.invert(ray);
+				int face = m.intersect(ray1);
+				if (face != -1) {
 					if (!found) {
 						found = true;
 						zDeapth = m.getCenter()[2];
@@ -140,7 +127,6 @@ public class Scene implements Renderer {
 					}
 				}
 			}
-
 		}
 		if (zDeapth != -10000f) {
 			objs.get(objLoc).setPicked(true);

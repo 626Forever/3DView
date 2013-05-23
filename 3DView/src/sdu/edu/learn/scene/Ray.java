@@ -123,9 +123,6 @@ public class Ray {
 		locations[1] = directVector[1] * t + origin[1];
 		locations[2] = directVector[2] * t + origin[2];
 
-		// System.out.println(locations[0] + "   " + locations[1] + "    "
-		// + locations[2]);
-
 		float[] vec3 = new float[3];
 		vec3[0] = locations[0] - x0;
 		vec3[1] = locations[1] - y0;
@@ -163,18 +160,30 @@ public class Ray {
 	}
 
 	public float[] getDirectVector() {
-		return this.directVector;
+		float d[] = new float[3];
+		d[0] = directVector[0];
+		d[1] = directVector[1];
+		d[2] = directVector[2];
+		return d;
 	}
 
 	public void setDirectVector(float[] d) {
-		this.directVector = d;
+		this.directVector[0] = d[0];
+		this.directVector[1] = d[1];
+		this.directVector[2] = d[2];
 	}
 
 	public float[] getOriginVector() {
-		return this.origin;
+		float o[] = new float[3];
+		o[0] = origin[0];
+		o[1] = origin[1];
+		o[2] = origin[2];
+		return o;
 	}
 
 	public void setOriginVector(float[] o) {
-		this.origin = o;
+		this.origin[0] = o[0];
+		this.origin[1] = o[1];
+		this.origin[2] = o[2];
 	}
 }

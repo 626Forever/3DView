@@ -68,6 +68,10 @@ public class Multilateral implements PolygonObject {
 		return 0;
 	}
 
+	public Ray invert(Ray ray) {
+		return null;
+	}
+
 	@Override
 	public float[] getCenter() {
 		// TODO Auto-generated method stub
