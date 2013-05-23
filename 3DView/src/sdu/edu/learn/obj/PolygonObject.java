@@ -4,6 +4,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
 
+/**
+ * »ù´¡½Ó¿Ú
+ * 
+ * @author lhy
+ * 
+ */
 public interface PolygonObject {
 
 	public void onDraw(GL10 gl);

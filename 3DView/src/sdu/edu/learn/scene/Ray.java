@@ -4,9 +4,9 @@ import sdu.edu.learn.obj.Sphere;
 import sdu.edu.learn.obj.Vertex;
 
 /**
- * 射线方程 aX+bY+cZ = d
+ * 射线,表示方式为记录射线的源点以及射线的方向向量
  * 
- * @author lhy
+ * @author lhy & hzy
  * 
  */
 public class Ray {
@@ -14,8 +14,13 @@ public class Ray {
 	private float foxy;
 	private float zNear;
 	private float zFar;
-
+	/**
+	 * 射线的方向向量
+	 */
 	private float directVector[] = new float[3];
+	/**
+	 * 射线的源点
+	 */
 	private float origin[] = new float[3];
 	private float[] viewPort = new float[4];
 	private float[] touchPostion = new float[2];
@@ -54,6 +59,15 @@ public class Ray {
 		origin[2] = 0;
 	}
 
+	/**
+	 * 与指定球体的碰撞检测
+	 * 
+	 * @param SphereCenter
+	 *            球体的中心
+	 * @param SphereRadius
+	 *            球体的半径
+	 * @return
+	 */
 	public boolean intersectWithSphere(float[] SphereCenter, float SphereRadius) {
 		float v1[] = new float[3];
 		v1[0] = SphereCenter[0] - origin[0];
@@ -75,6 +89,15 @@ public class Ray {
 
 	}
 
+	/**
+	 * 与指定顶点组成的面的碰撞检测
+	 * 
+	 * @param vs
+	 *            顶点数组
+	 * @param locations
+	 *            与这些顶点组成的面的交点
+	 * @return
+	 */
 	public boolean intersectWithPolygon(Vertex[] vs, float[] locations) {
 		float[] v0 = vs[0].getVertex();
 		float[] v1 = vs[1].getVertex();
@@ -107,11 +130,16 @@ public class Ray {
 		vec2[1] = y2 - y0;
 		vec2[2] = z2 - z0;
 
+		/**
+		 * 这个面的法向量
+		 */
 		float normal[] = new float[3];
 		normal[0] = vec1[1] * vec2[2] - vec1[2] * vec2[1];
 		normal[1] = vec1[2] * vec2[0] - vec1[0] * vec2[2];
 		normal[2] = vec1[0] * vec2[1] - vec1[1] * vec2[0];
-
+		/**
+		 * 利用法向量与射线的方程联立，求出相交点
+		 */
 		float t = ((x0 - origin[0]) * normal[0] + (y0 - origin[1]) * normal[1] + (z0 - origin[2])
 				* normal[2])
 				/ (directVector[0] * normal[0] + directVector[1] * normal[1] + directVector[2]
@@ -129,7 +157,10 @@ public class Ray {
 		vec3[2] = locations[2] - z0;
 
 		float a = 0, b = 0;
-
+		/**
+		 * 检测相交点是否在指定顶点围成的四边形内，由于四边形为正方形，可以设矩形相邻两边的对应向量为v1和v2，
+		 * v1v2有一个共同的源点，则相交点与源点构成的向量可以表示为v3 = a*v1+b*v2，a、b小于等于1, 大于等于0
+		 */
 		if (vec3[2] == 0) {
 			a = (vec2[1] * vec3[0] - vec2[0] * vec3[1])
 					/ (vec1[0] * vec2[1] - vec2[0] * vec1[1]);
@@ -159,6 +190,11 @@ public class Ray {
 		}
 	}
 
+	/**
+	 * 获取方向向量
+	 * 
+	 * @return
+	 */
 	public float[] getDirectVector() {
 		float d[] = new float[3];
 		d[0] = directVector[0];
@@ -173,6 +209,11 @@ public class Ray {
 		this.directVector[2] = d[2];
 	}
 
+	/**
+	 * 获取源点
+	 * 
+	 * @return
+	 */
 	public float[] getOriginVector() {
 		float o[] = new float[3];
 		o[0] = origin[0];

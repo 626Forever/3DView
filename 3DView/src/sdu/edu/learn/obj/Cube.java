@@ -9,6 +9,12 @@ import javax.microedition.khronos.opengles.GL10;
 import sdu.edu.learn.scene.Ray;
 import sdu.edu.learn.scene.RayFactory;
 
+/**
+ * 立方体
+ * 
+ * @author lhy
+ * 
+ */
 public class Cube extends Multilateral {
 
 	private int polygon_Type = GL10.GL_TRIANGLE_STRIP;;
@@ -51,6 +57,9 @@ public class Cube extends Multilateral {
 		}
 	}
 
+	/**
+	 * 初始化
+	 */
 	private void init() {
 		vertices = new float[] { -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
 				1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
@@ -95,7 +104,9 @@ public class Cube extends Multilateral {
 		gl.glEnable(GL10.GL_CULL_FACE);
 		gl.glCullFace(GL10.GL_BACK);
 		gl.glPushMatrix();
-
+		/**
+		 * 变换遵循先缩放，在旋转，最后移动的顺序
+		 */
 		gl.glTranslatef(translateCoordinats[0], translateCoordinats[1],
 				translateCoordinats[2]);
 		gl.glTranslatef(center[0], center[1], center[2]);
@@ -202,7 +213,9 @@ public class Cube extends Multilateral {
 		float location[] = new float[3];
 
 		Vertex v0, v1, v2, v3;
-
+		/**
+		 * 依次检测立方体的每个面
+		 */
 		for (int i = 0; i < 6; i++) {
 			float v[] = new float[3];
 			v[0] = vertices[i * 12];
@@ -224,7 +237,9 @@ public class Cube extends Multilateral {
 			v[1] = vertices[i * 12 + 10];
 			v[2] = vertices[i * 12 + 11];
 			v3 = new Vertex(v);
-
+			/**
+			 * 射线是否与该面相交
+			 */
 			if (ray.intersectWithPolygon(new Vertex[] { v0, v1, v2, v3 },
 					location)) {
 				if (!bfound) {
@@ -246,11 +261,18 @@ public class Cube extends Multilateral {
 			return -1;
 	}
 
+	/**
+	 * 转置射线，这里的思想是：由于射线与立方体的空间相对位置是不会变的，如果把立方体倒转为最初的状态，以此倒转矩阵处理
+	 * 射线，则可以得到与立方体空间相对位置不变的射线，在求出该射线与立方体的交点后，由于立方体的最初状态是事先定义好的
+	 * 利用得到的交点可以轻松地判断该交点在不在立方体的某个面上，从而确定该射线是否与立方体相交
+	 */
 	public Ray invert(Ray ray) {
 		Ray ray1 = RayFactory.getRay();
 		float direct[] = ray.getDirectVector();
 		float origin[] = ray.getOriginVector();
-		
+		/**
+		 * 还原移动
+		 */
 		origin[0] -= translateCoordinats[0] + center[0];
 		origin[1] -= translateCoordinats[1] + center[1];
 		origin[2] -= translateCoordinats[2] + center[2];
@@ -322,7 +344,9 @@ public class Cube extends Multilateral {
 				+ (float) Math.sin(rotateX) * originZ;
 		origin[2] = (float) -Math.sin(rotateX) * originY
 				+ (float) Math.cos(rotateX) * originZ;
-
+		/**
+		 * 还原缩放
+		 */
 		direct[0] = direct[0] / scales[0];
 		direct[1] = direct[1] / scales[1];
 		direct[2] = direct[2] / scales[2];
@@ -344,6 +368,9 @@ public class Cube extends Multilateral {
 		return c;
 	}
 
+	/**
+	 * 获取外切球半径
+	 */
 	public float getSphereRadius() {
 		float r = (float) Math.sqrt(scales[0] * scales[0] + scales[1]
 				* scales[1] + scales[2] * scales[2]);

@@ -1,5 +1,11 @@
 package sdu.edu.learn.scene;
 
+/**
+ * 射线工厂
+ * 
+ * @author lhy & hzy
+ * 
+ */
 public class RayFactory {
 	public static float foxy;
 
@@ -10,7 +16,6 @@ public class RayFactory {
 	public static float touchPostion[] = new float[2];
 
 	public static boolean pickful = false;
-	
 
 	public static boolean isPickful() {
 		return pickful;
@@ -56,6 +61,11 @@ public class RayFactory {
 		touchPostion[1] = tp[1];
 	}
 
+	/**
+	 * 获取一个射线
+	 * 
+	 * @return
+	 */
 	public static Ray getRay() {
 		Ray ray = new Ray();
 		ray.setTouchPostion(touchPostion);

@@ -9,7 +9,6 @@ import javax.microedition.khronos.opengles.GL10;
 import sdu.edu.learn.R;
 import sdu.edu.learn.obj.Cube;
 import sdu.edu.learn.obj.Multilateral;
-import sdu.edu.learn.obj.Polygon;
 import sdu.edu.learn.obj.Sphere;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -20,12 +19,22 @@ import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.view.MotionEvent;
 
-@SuppressLint("WrongCall")
+/**
+ * 三维场景
+ * 
+ * @author hzy
+ * 
+ */
 public class Scene implements Renderer {
 	private Context parent;
+	/**
+	 * 保存多边体对象的线性表
+	 */
 	private ArrayList<Multilateral> objs = new ArrayList<Multilateral>();
-	Polygon p;
-
+	// Polygon p;
+	/**
+	 * 保存一些可用的纹理id
+	 */
 	int[] textures = new int[10];
 
 	// 定义环境光
@@ -66,10 +75,20 @@ public class Scene implements Renderer {
 
 	}
 
+	/**
+	 * 装载位图，并将图像生成纹理
+	 * 
+	 * @param gl
+	 *            GL工具
+	 * @param bitmap
+	 *            图像文件
+	 */
 	public void loadTexture(GL10 gl, Bitmap bitmap) {
 		gl.glGenTextures(1, textures, 0);// 获取材质id
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
-
+		/**
+		 * 设置纹理的细节效果
+		 */
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
 				GL10.GL_LINEAR);
 		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
@@ -85,6 +104,7 @@ public class Scene implements Renderer {
 	/**
 	 * 绘制区域
 	 */
+	@SuppressLint("WrongCall")
 	@Override
 	public void onDrawFrame(GL10 gl) {
 		// TODO Auto-generated method stub
@@ -92,34 +112,39 @@ public class Scene implements Renderer {
 		gl.glEnable(GL10.GL_LIGHTING);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-		// p.onDraw(gl);
 		for (int i = 0; i < objs.size(); i++) {
 			objs.get(i).onDraw(gl);
 		}
-		updatePick();
+		updatePick();// 检测拾取
 
 	}
 
+	/**
+	 * 拾取检测函数
+	 */
 	public void updatePick() {
 		if (!RayFactory.isPickful()) {
 			return;
 		}
 		boolean found = false;
-		float zDeapth = -10000f;
-		int objLoc = 0;
-		final Ray ray = RayFactory.getRay();
+		float zDeapth = -10000f;// 深度信息
+		int objLoc = 0; // 拾取到的多边体id
+		final Ray ray = RayFactory.getRay();// 获取对应屏幕点击处的射线
 		for (int i = 0; i < objs.size(); i++) {
 			Multilateral m = objs.get(i);
+			/**
+			 * 如果射线与该对象的外切球相交，可以进行下一步检测
+			 */
 			if (ray.intersectWithSphere(m.getCenter(), m.getSphereRadius())) {
-				System.out.println(i);
 				Ray ray1 = m.invert(ray);
-				int face = m.intersect(ray1);
+				int face = m.intersect(ray1);// 检测射线与多边体那个面相交
 				if (face != -1) {
 					if (!found) {
 						found = true;
 						zDeapth = m.getCenter()[2];
 						objLoc = i;
 					} else {
+						// 若当前的对象的深度信息更大，则说明当前对象比已选定的对象跟靠近摄像机
 						if (zDeapth < m.getCenter()[2]) {
 							zDeapth = m.getCenter()[2];
 							objLoc = i;
@@ -128,13 +153,13 @@ public class Scene implements Renderer {
 				}
 			}
 		}
-		if (zDeapth != -10000f) {
+		if (zDeapth != -10000f) {// 若有对象被选定
 			objs.get(objLoc).setPicked(true);
 		}
 	}
 
 	/**
-	 * 窗口变化
+	 * 窗口变化,同时重置相机
 	 */
 	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -157,7 +182,7 @@ public class Scene implements Renderer {
 	}
 
 	/**
-	 * 窗口创建
+	 * 窗口创建,以及各项相关初始化
 	 */
 	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -187,22 +212,31 @@ public class Scene implements Renderer {
 		}
 	}
 
+	/**
+	 * scene对触摸事件的响应
+	 * 
+	 * @param event
+	 * @return
+	 */
 	public boolean onTouch(MotionEvent event) {
 		float x = event.getX();
 		float y = event.getY();
+		/**
+		 * 设置射线工厂最新的屏幕坐标
+		 */
 		RayFactory.setTouchPostion(new float[] { x, y });
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
-			RayFactory.setPickful(true);
+			RayFactory.setPickful(true);// 检测拾取
 			break;
 		case MotionEvent.ACTION_UP:
-			RayFactory.setPickful(false);
+			RayFactory.setPickful(false);// 取消拾取
 			for (int i = 0; i < objs.size(); i++) {
 				objs.get(i).setPicked(false);
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
-			RayFactory.setPickful(false);
+			RayFactory.setPickful(false);// 取消拾取，移动被拾取到的对象
 			for (int i = 0; i < objs.size(); i++) {
 				Multilateral m = objs.get(i);
 				if (m.isPicked()) {
@@ -215,6 +249,12 @@ public class Scene implements Renderer {
 
 	}
 
+	/**
+	 * scene的长按事件处理,即缩放
+	 * 
+	 * @param event
+	 * @return
+	 */
 	public boolean onLongPress(MotionEvent event) {
 		float x = event.getX();
 		float y = event.getY();

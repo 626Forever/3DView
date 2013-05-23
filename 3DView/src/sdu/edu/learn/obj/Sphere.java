@@ -9,6 +9,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
 
+/**
+ * ÇòÌå
+ * 
+ * @author lhy
+ * 
+ */
 public class Sphere extends Multilateral {
 
 	private int vCount;
@@ -184,8 +190,8 @@ public class Sphere extends Multilateral {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
-	public Ray invert(Ray ray){
+
+	public Ray invert(Ray ray) {
 		return ray;
 	}
 

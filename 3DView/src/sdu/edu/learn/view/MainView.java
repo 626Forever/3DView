@@ -6,11 +6,16 @@ import android.opengl.GLSurfaceView;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
+/**
+ * 绘制场景的View
+ * 
+ * @author hzy
+ * 
+ */
 public class MainView extends GLSurfaceView {
 	private Scene scene;
-	private Context context;
+	// private Context context;
 	private GestureDetector gestureScanner;
 
 	public MainView(Context context) {
@@ -24,7 +29,10 @@ public class MainView extends GLSurfaceView {
 		super(context);
 		this.scene = scene;
 		this.setRenderer(scene);
-		this.context = context;
+		// this.context = context;
+		/**
+		 * 响应长按效果的监听
+		 */
 		gestureScanner = new GestureDetector(new OnGestureListener() {
 			@Override
 			public boolean onDown(MotionEvent e) {
@@ -42,7 +50,7 @@ public class MainView extends GLSurfaceView {
 			@Override
 			public void onLongPress(MotionEvent e) {
 				// TODO Auto-generated method stub
-				MainView.this.scene.onLongPress(e);
+				MainView.this.scene.onLongPress(e);// 此处调用scene的长按函数
 			}
 
 			@Override

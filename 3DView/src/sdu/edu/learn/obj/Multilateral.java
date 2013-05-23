@@ -4,9 +4,15 @@ import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
 
+/**
+ * 多边体,是球体和立方体的父类
+ * 
+ * @author lhy
+ * 
+ */
 public class Multilateral implements PolygonObject {
-	protected boolean picked = false;
-	protected boolean scaled = false;
+	protected boolean picked = false;// 是否被拾取到
+	protected boolean scaled = false;// 是否缩放过
 
 	@Override
 	public void onDraw(GL10 gl) {

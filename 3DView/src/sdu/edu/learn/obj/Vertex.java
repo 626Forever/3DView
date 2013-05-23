@@ -1,5 +1,11 @@
 package sdu.edu.learn.obj;
 
+/**
+ * ¶¥µã¶ÔÏó
+ * 
+ * @author lhy
+ * 
+ */
 public class Vertex {
 	private float v[] = new float[3];
 

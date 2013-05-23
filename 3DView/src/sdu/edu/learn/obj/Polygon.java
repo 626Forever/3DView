@@ -8,6 +8,12 @@ import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
 
+/**
+ * ¶à±ßÐÎ
+ * 
+ * @author lhy
+ * 
+ */
 public class Polygon implements PolygonObject {
 	private int polygon_Type;
 	private int vertex_nums;
@@ -44,7 +50,7 @@ public class Polygon implements PolygonObject {
 	@Override
 	public void setTextureCoordinates(float[] textureCoords) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -82,19 +88,19 @@ public class Polygon implements PolygonObject {
 	@Override
 	public void rotateX(float angle) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void rotateY(float angle) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void rotateZ(float angle) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -122,13 +128,13 @@ public class Polygon implements PolygonObject {
 
 	public void setPicked(boolean picked) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setTextures(int[] textures) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

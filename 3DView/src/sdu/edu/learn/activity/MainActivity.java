@@ -4,16 +4,17 @@ import sdu.edu.learn.R;
 import sdu.edu.learn.scene.Scene;
 import sdu.edu.learn.view.MainView;
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.opengl.GLSurfaceView;
-import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
+/**
+ * »ù´¡Activity
+ * 
+ * @author hzy
+ * 
+ */
 public class MainActivity extends Activity {
 
 	@Override
