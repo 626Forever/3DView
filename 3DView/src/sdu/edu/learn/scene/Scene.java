@@ -57,7 +57,7 @@ public class Scene implements Renderer {
 		c.scale(0.5f, 0.5f, 0.5f);
 		objs.add(c);
 
-		Sphere s = new Sphere(new float[] { 1, 1, -4 }, 0.4f);
+		Sphere s = new Sphere(new float[] { 1, 1, -6 }, 0.4f);
 		objs.add(s);
 		s = new Sphere(new float[] { -5, -4, -10 }, 0.4f);
 		objs.add(s);
@@ -223,7 +223,7 @@ public class Scene implements Renderer {
 			}
 			break;
 		}
-
+		
 		return true;
 
 	}

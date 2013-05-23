@@ -5,7 +5,7 @@ import javax.microedition.khronos.opengles.GL10;
 import sdu.edu.learn.scene.Ray;
 
 public class Multilateral implements PolygonObject {
-	protected boolean picked;
+	protected boolean picked = false;
 
 	@Override
 	public void onDraw(GL10 gl) {

@@ -346,7 +346,8 @@ public class Cube extends Multilateral {
 	}
 
 	public float getSphereRadius() {
-		float r = (float) Math.sqrt(3);
+		float r = (float) Math.sqrt(scales[0] * scales[0] + scales[1]
+				* scales[1] + scales[2] * scales[2]);
 		return r;
 	}
 
