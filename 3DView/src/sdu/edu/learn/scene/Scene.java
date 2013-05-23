@@ -58,8 +58,10 @@ public class Scene implements Renderer {
 		objs.add(c);
 
 		Sphere s = new Sphere(new float[] { 1, 1, -6 }, 0.4f);
+		s.rotateX(-90);
 		objs.add(s);
 		s = new Sphere(new float[] { -5, -4, -10 }, 0.4f);
+		s.rotateX(-90);
 		objs.add(s);
 
 	}
@@ -138,8 +140,8 @@ public class Scene implements Renderer {
 					}
 				}
 			}
-		}
 
+		}
 		if (zDeapth != -10000f) {
 			objs.get(objLoc).setPicked(true);
 		}
@@ -214,18 +216,37 @@ public class Scene implements Renderer {
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
+			RayFactory.setPickful(false);
 			for (int i = 0; i < objs.size(); i++) {
 				Multilateral m = objs.get(i);
 				if (m.isPicked()) {
 					m.move(RayFactory.getRay());
-					break;
 				}
 			}
 			break;
 		}
-		
 		return true;
 
 	}
 
+	public boolean onLongPress(MotionEvent event) {
+		float x = event.getX();
+		float y = event.getY();
+		RayFactory.setTouchPostion(new float[] { x, y });
+		RayFactory.setPickful(true);
+		for (int i = 0; i < objs.size(); i++) {
+			Multilateral m = objs.get(i);
+			if (m.isPicked()) {
+				if (!m.isScaled()) {
+					m.scale(2f, 2f, 2f);
+					m.setScaled(true);
+				} else {
+					m.scale(0.5f, 0.5f, 0.5f);
+					m.setScaled(false);
+				}
+			}
+		}
+		RayFactory.setPickful(false);
+		return false;
+	}
 }

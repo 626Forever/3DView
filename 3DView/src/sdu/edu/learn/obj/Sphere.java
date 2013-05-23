@@ -170,7 +170,13 @@ public class Sphere extends Multilateral {
 	@Override
 	public void scale(float xs, float ys, float zs) {
 		// TODO Auto-generated method stub
+		scale(xs);
+	}
 
+	private void scale(float ra) {
+		scales[0] *= ra;
+		scales[1] *= ra;
+		scales[2] *= ra;
 	}
 
 	@Override
@@ -188,7 +194,7 @@ public class Sphere extends Multilateral {
 	}
 
 	public float getSphereRadius() {
-		return this.radius;
+		return this.radius * scales[0];
 	}
 
 	public void move(Ray ray) {

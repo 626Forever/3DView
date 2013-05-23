@@ -272,15 +272,15 @@ public class Cube extends Multilateral {
 		 * ÈÆzÖáµ¹×ª
 		 */
 
-		direct[0] = (float) Math.cos(-rotateZ) * directX
-				- (float) Math.sin(-rotateZ) * directY;
-		direct[1] = (float) Math.sin(-rotateZ) * directX
-				+ (float) Math.cos(-rotateZ) * directY;
+		direct[0] = (float) Math.cos(rotateZ) * directX
+				+ (float) Math.sin(rotateZ) * directY;
+		direct[1] = -(float) Math.sin(rotateZ) * directX
+				+ (float) Math.cos(rotateZ) * directY;
 
-		origin[0] = (float) Math.cos(-rotateZ) * originX
-				- (float) Math.sin(-rotateZ) * originY;
-		origin[1] = (float) Math.sin(-rotateZ) * originX
-				+ (float) Math.cos(-rotateZ) * originY;
+		origin[0] = (float) Math.cos(rotateZ) * originX
+				+ (float) Math.sin(rotateZ) * originY;
+		origin[1] = -(float) Math.sin(rotateZ) * originX
+				+ (float) Math.cos(rotateZ) * originY;
 
 		directX = direct[0];
 		directY = direct[1];
@@ -293,15 +293,15 @@ public class Cube extends Multilateral {
 		/**
 		 * ÈÆyÖáµ¹×ª
 		 */
-		direct[0] = (float) Math.cos(-rotateY) * directX
-				+ (float) Math.sin(-rotateY) * directZ;
-		direct[2] = (float) -Math.sin(-rotateY) * directX
-				+ (float) Math.cos(-rotateY) * directZ;
+		direct[0] = (float) Math.cos(rotateY) * directX
+				- (float) Math.sin(rotateY) * directZ;
+		direct[2] = (float) Math.sin(rotateY) * directX
+				+ (float) Math.cos(rotateY) * directZ;
 
-		origin[0] = (float) Math.cos(-rotateY) * originX
-				+ (float) Math.sin(-rotateY) * originZ;
-		origin[2] = (float) -Math.sin(-rotateY) * originX
-				+ (float) Math.cos(-rotateY) * originZ;
+		origin[0] = (float) Math.cos(rotateY) * originX
+				- (float) Math.sin(rotateY) * originZ;
+		origin[2] = (float) Math.sin(rotateY) * originX
+				+ (float) Math.cos(rotateY) * originZ;
 
 		directX = direct[0];
 		directY = direct[1];
@@ -314,15 +314,15 @@ public class Cube extends Multilateral {
 		/**
 		 * ÈÆxÖáµ¹×ª
 		 */
-		direct[1] = (float) Math.cos(-rotateX) * directY
-				- (float) Math.sin(-rotateX) * directZ;
-		direct[2] = (float) Math.sin(-rotateX) * directY
-				+ (float) Math.cos(-rotateX) * directZ;
+		direct[1] = (float) Math.cos(rotateX) * directY
+				+ (float) Math.sin(rotateX) * directZ;
+		direct[2] = (float) -Math.sin(rotateX) * directY
+				+ (float) Math.cos(rotateX) * directZ;
 
-		origin[1] = (float) Math.cos(-rotateX) * originY
-				- (float) Math.sin(-rotateX) * originZ;
-		origin[2] = (float) Math.sin(-rotateX) * originY
-				+ (float) Math.cos(-rotateX) * originZ;
+		origin[1] = (float) Math.cos(rotateX) * originY
+				+ (float) Math.sin(rotateX) * originZ;
+		origin[2] = (float) -Math.sin(rotateX) * originY
+				+ (float) Math.cos(rotateX) * originZ;
 
 		direct[0] = direct[0] / scales[0];
 		direct[1] = direct[1] / scales[1];

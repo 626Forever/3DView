@@ -6,6 +6,7 @@ import sdu.edu.learn.scene.Ray;
 
 public class Multilateral implements PolygonObject {
 	protected boolean picked = false;
+	protected boolean scaled = false;
 
 	@Override
 	public void onDraw(GL10 gl) {
@@ -94,5 +95,14 @@ public class Multilateral implements PolygonObject {
 	}
 
 	public void move(Ray ray) {
+
+	}
+
+	public boolean isScaled() {
+		return scaled;
+	}
+
+	public void setScaled(boolean scaled) {
+		this.scaled = scaled;
 	}
 }
