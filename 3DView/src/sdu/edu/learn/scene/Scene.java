@@ -38,7 +38,7 @@ public class Scene implements Renderer {
 	int[] textures = new int[10];
 
 	// 定义环境光
-	private FloatBuffer lightAmbient = FloatBuffer.wrap(new float[] { 1.0f,
+	private FloatBuffer lightAmbient = FloatBuffer.wrap(new float[] {1.0f,
 			1.0f, 1.0f, 1.0f });
 	// 定义漫射光
 	private FloatBuffer lightDiffuse = FloatBuffer.wrap(new float[] { 1.0f,
@@ -48,7 +48,7 @@ public class Scene implements Renderer {
 			1.0f, 1.0f, 1.0f });
 	// 定义光源的位置
 	private FloatBuffer lightPosition = FloatBuffer.wrap(new float[] { 2.0f,
-			4.0f, 0.0f, 1.0f });
+			2.0f, 2.0f, 0.0f });
 
 	public Scene(Context parent) {
 		this.parent = parent;
