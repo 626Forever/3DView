@@ -12,7 +12,7 @@ import sdu.edu.learn.scene.RayFactory;
 /**
  * Α’·½Με
  * 
- * @author lhy
+ * @author hzy
  * 
  */
 public class Cube extends Multilateral {

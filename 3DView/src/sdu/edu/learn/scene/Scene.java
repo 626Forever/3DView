@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 /**
  * ÈýÎ¬³¡¾°
  * 
- * @author hzy
+ * @author lhy
  * 
  */
 public class Scene implements Renderer {

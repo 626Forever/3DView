@@ -6,7 +6,7 @@ import sdu.edu.learn.obj.Vertex;
 /**
  * 射线,表示方式为记录射线的源点以及射线的方向向量
  * 
- * @author lhy & hzy
+ * @author lhy
  * 
  */
 public class Ray {

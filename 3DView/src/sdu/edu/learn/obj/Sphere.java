@@ -12,7 +12,7 @@ import sdu.edu.learn.scene.Ray;
 /**
  * ÇòÌå
  * 
- * @author lhy
+ * @author hzy
  * 
  */
 public class Sphere extends Multilateral {

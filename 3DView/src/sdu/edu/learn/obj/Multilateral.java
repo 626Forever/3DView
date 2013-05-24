@@ -7,7 +7,7 @@ import sdu.edu.learn.scene.Ray;
 /**
  * 多边体,是球体和立方体的父类
  * 
- * @author lhy
+ * @author hzy
  * 
  */
 public class Multilateral implements PolygonObject {
