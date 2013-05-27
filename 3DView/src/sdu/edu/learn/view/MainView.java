@@ -17,7 +17,7 @@ import android.view.MotionEvent;
 public class MainView extends GLSurfaceView {
 	private int operation_mode = MainActivity.MOVE_MODE;
 	private Scene scene;
-	private Context context;
+	// private Context context;
 	private GestureDetector gestureScanner;
 
 	public MainView(Context context) {
@@ -31,7 +31,7 @@ public class MainView extends GLSurfaceView {
 		super(context);
 		this.scene = scene;
 		this.setRenderer(scene);
-		this.context = context;
+		// this.context = context;
 		/**
 		 * 响应长按效果的监听
 		 */

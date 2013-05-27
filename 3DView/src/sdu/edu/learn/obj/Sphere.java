@@ -20,12 +20,12 @@ public class Sphere extends Multilateral {
 	private int vCount;
 	public static float pi = 3.14159265357f;
 	private float radius;
-	private float[] center;
 
+	private float[] center;
 	private float translateCoordinats[] = new float[3];
-	private float rotateAngles[] = new float[3];
 	private float scales[] = new float[3];
 	private float rotateMatrix[];
+	private float textureCoordinats[];
 
 	private FloatBuffer textCoordinats;
 	private FloatBuffer vertexs;
@@ -39,7 +39,6 @@ public class Sphere extends Multilateral {
 		this.center[2] = center[2];
 		for (int i = 0; i < 3; i++) {
 			translateCoordinats[i] = 0;
-			rotateAngles[i] = 0;
 			scales[i] = 1;
 		}
 		this.init();
@@ -87,6 +86,7 @@ public class Sphere extends Multilateral {
 				alVertex.add(z);
 			}
 		}
+		textureCoordinats = new float[alVertex.size()];
 
 		vCount = alVertex.size() / 12;
 		float vertices[] = new float[alVertex.size()];
@@ -104,6 +104,12 @@ public class Sphere extends Multilateral {
 		nomalBuffer = nbb.asFloatBuffer(); // 转换成int型缓冲
 		nomalBuffer.put(vertices); // 想缓冲区放入顶点坐标数据
 		nomalBuffer.position(0); // 设置缓冲区起始位置
+
+		ByteBuffer nb = ByteBuffer.allocateDirect(textureCoordinats.length * 4); // 一个整型是4个字节
+		nb.order(ByteOrder.nativeOrder()); // 设置字节顺序
+		textCoordinats = nb.asFloatBuffer(); // 转换成int型缓冲
+		textCoordinats.put(vertices); // 想缓冲区放入顶点坐标数据
+		textCoordinats.position(0); // 设置缓冲区起始位置
 	}
 
 	@Override
@@ -155,24 +161,6 @@ public class Sphere extends Multilateral {
 		this.translateCoordinats[0] = x;
 		this.translateCoordinats[1] = y;
 		this.translateCoordinats[2] = z;
-	}
-
-	@Override
-	public void rotateX(float angle) {
-		// TODO Auto-generated method stub
-		this.rotateAngles[0] += angle;
-	}
-
-	@Override
-	public void rotateY(float angle) {
-		// TODO Auto-generated method stub
-		this.rotateAngles[1] += angle;
-	}
-
-	@Override
-	public void rotateZ(float angle) {
-		// TODO Auto-generated method stub
-		this.rotateAngles[2] += angle;
 	}
 
 	@Override

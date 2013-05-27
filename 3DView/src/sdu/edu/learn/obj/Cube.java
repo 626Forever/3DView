@@ -13,7 +13,7 @@ import sdu.edu.learn.util.Matrix;
 /**
  * Α’·½Με
  * 
- * @author hzy
+ * @author lhy
  * 
  */
 public class Cube extends Multilateral {
@@ -23,7 +23,6 @@ public class Cube extends Multilateral {
 
 	private float center[] = new float[3];
 	private float translateCoordinats[] = new float[3];
-	private float rotateAngles[] = new float[3];
 	private float scales[] = new float[3];
 	private float vertices[];
 	private float textureCoordinats[];
@@ -40,7 +39,6 @@ public class Cube extends Multilateral {
 		center[2] = z;
 		for (int i = 0; i < 3; i++) {
 			translateCoordinats[i] = 0;
-			rotateAngles[i] = 0;
 			scales[i] = 1;
 		}
 		init();
@@ -56,7 +54,6 @@ public class Cube extends Multilateral {
 		vertexs.position(0);
 		for (int i = 0; i < 3; i++) {
 			translateCoordinats[i] = 0;
-			rotateAngles[i] = 0;
 			scales[i] = 1;
 		}
 	}
@@ -106,7 +103,6 @@ public class Cube extends Multilateral {
 	@Override
 	public void onDraw(GL10 gl) {
 		// TODO Auto-generated method stub
-
 		gl.glFrontFace(GL10.GL_CCW);
 		gl.glEnable(GL10.GL_CULL_FACE);
 		gl.glCullFace(GL10.GL_BACK);
@@ -189,24 +185,6 @@ public class Cube extends Multilateral {
 		scales[0] *= xs;
 		scales[1] *= ys;
 		scales[2] *= zs;
-	}
-
-	@Override
-	public void rotateX(float angle) {
-		// TODO Auto-generated method stub
-		rotateAngles[0] += angle;
-	}
-
-	@Override
-	public void rotateY(float angle) {
-		// TODO Auto-generated method stub
-		rotateAngles[1] += angle;
-	}
-
-	@Override
-	public void rotateZ(float angle) {
-		// TODO Auto-generated method stub
-		rotateAngles[2] += angle;
 	}
 
 	@Override

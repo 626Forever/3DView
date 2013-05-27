@@ -13,7 +13,6 @@ public class Ray {
 
 	private float foxy;
 	private float zNear;
-	private float zFar;
 	/**
 	 * 射线的方向向量
 	 */
@@ -25,14 +24,13 @@ public class Ray {
 	private float[] viewPort = new float[4];
 	private float[] touchPostion = new float[2];
 
-	public void setViewPort(float[] viewPort, float foxy, float zNear,
-			float zFar) {
+	public void setViewPort(float[] viewPort, float foxy, float zNear) {
 		this.viewPort[0] = viewPort[0];
 		this.viewPort[1] = viewPort[1];
 		this.viewPort[2] = viewPort[2];
 		this.viewPort[3] = viewPort[3];
 		this.foxy = foxy;
-		this.zFar = zFar;
+
 		this.zNear = zNear;
 	}
 
@@ -102,7 +100,6 @@ public class Ray {
 		float[] v0 = vs[0].getVertex();
 		float[] v1 = vs[1].getVertex();
 		float[] v2 = vs[2].getVertex();
-		float[] v3 = vs[3].getVertex();
 
 		float x0 = v0[0];
 		float y0 = v0[1];
@@ -115,10 +112,6 @@ public class Ray {
 		float x2 = v2[0];
 		float y2 = v2[1];
 		float z2 = v2[2];
-
-		float x3 = v3[0];
-		float y3 = v3[1];
-		float z3 = v3[2];
 
 		float[] vec1 = new float[3];
 		vec1[0] = x1 - x0;

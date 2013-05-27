@@ -69,7 +69,7 @@ public class RayFactory {
 	public static Ray getRay() {
 		Ray ray = new Ray();
 		ray.setTouchPostion(touchPostion);
-		ray.setViewPort(viewPort, foxy, zNear, zFar);
+		ray.setViewPort(viewPort, foxy, zNear);
 		ray.produce();
 		return ray;
 	}

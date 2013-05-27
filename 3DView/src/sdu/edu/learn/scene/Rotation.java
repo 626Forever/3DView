@@ -2,6 +2,12 @@ package sdu.edu.learn.scene;
 
 import sdu.edu.learn.obj.Sphere;
 
+/**
+ * 旋转操作，用来指定旋转轴和旋转角度
+ * 
+ * @author lhy
+ * 
+ */
 public class Rotation {
 	private float previousX;
 	private float previousY;
@@ -49,22 +55,26 @@ public class Rotation {
 		float axisLength = (presentX - previousX) * (presentX - previousX)
 				+ (previousY - presentY) * (previousY - presentY);
 		axisLength = (float) Math.sqrt(axisLength);
-		axis[3] = axisLength / (viewPort[3] - viewPort[1]) * 360;
-		if (Math.abs(axis[0]) > Math.abs(axis[1])) {
-			float temp = axis[0];
-			axis[0] = 0;
-			axis[1] = 1;
-			if (temp < 0) {
-				axis[3] = -axis[3];
-			}
-		} else {
-			float temp = axis[1];
-			axis[0] = 1;
-			axis[1] = 0;
-			if (temp > 0) {
-				axis[3] = -axis[3];
-			}
-		}
+		axis[3] = -axisLength / (viewPort[3] - viewPort[1]) * 360;
+
+		axis[0] = proportion * (presentY - previousY);
+		axis[1] = proportion * (presentX - previousX);
+
+		// if (Math.abs(axis[0]) > Math.abs(axis[1])) {
+		// float temp = axis[0];
+		// axis[0] = 0;
+		// axis[1] = 1;
+		// if (temp < 0) {
+		// axis[3] = -axis[3];
+		// }
+		// } else {
+		// float temp = axis[1];
+		// axis[0] = 1;
+		// axis[1] = 0;
+		// if (temp > 0) {
+		// axis[3] = -axis[3];
+		// }
+		// }
 
 		return axis;
 	}

@@ -86,24 +86,6 @@ public class Polygon implements PolygonObject {
 	}
 
 	@Override
-	public void rotateX(float angle) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void rotateY(float angle) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void rotateZ(float angle) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public int intersect(Ray ray) {
 		// TODO Auto-generated method stub
 		return -1;
@@ -140,7 +122,7 @@ public class Polygon implements PolygonObject {
 	@Override
 	public void rotate(float x, float y, float z, float angle) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
