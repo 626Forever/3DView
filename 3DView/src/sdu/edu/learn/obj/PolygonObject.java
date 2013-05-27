@@ -29,6 +29,8 @@ public interface PolygonObject {
 	public void rotateY(float angle);
 
 	public void rotateZ(float angle);
+	
+	public void rotate(float x,float y,float z,float angle);
 
 	public void scale(float xs, float ys, float zs);
 

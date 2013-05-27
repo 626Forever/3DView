@@ -61,6 +61,14 @@ public class Multilateral implements PolygonObject {
 		// TODO Auto-generated method stub
 
 	}
+	
+	
+
+	@Override
+	public void rotate(float x, float y, float z, float angle) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	@Override
 	public void scale(float xs, float ys, float zs) {

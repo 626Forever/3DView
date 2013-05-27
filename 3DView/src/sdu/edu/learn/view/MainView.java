@@ -1,5 +1,6 @@
 package sdu.edu.learn.view;
 
+import sdu.edu.learn.activity.MainActivity;
 import sdu.edu.learn.scene.Scene;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -14,8 +15,9 @@ import android.view.MotionEvent;
  * 
  */
 public class MainView extends GLSurfaceView {
+	private int operation_mode = MainActivity.MOVE_MODE;
 	private Scene scene;
-	// private Context context;
+	private Context context;
 	private GestureDetector gestureScanner;
 
 	public MainView(Context context) {
@@ -29,7 +31,7 @@ public class MainView extends GLSurfaceView {
 		super(context);
 		this.scene = scene;
 		this.setRenderer(scene);
-		// this.context = context;
+		this.context = context;
 		/**
 		 * 响应长按效果的监听
 		 */
@@ -99,9 +101,20 @@ public class MainView extends GLSurfaceView {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		// TODO Auto-generated method stub
-		scene.onTouch(event);
+		switch (operation_mode) {
+		case MainActivity.MOVE_MODE:
+			scene.onTouchMove(event);
+			break;
+		case MainActivity.ROTATE_MODE:
+			scene.onTouchRotation(event);
+			break;
+		}
 		gestureScanner.onTouchEvent(event);
 		return true;
+	}
+
+	public void setMode(int mode) {
+		this.operation_mode = mode;
 	}
 
 }

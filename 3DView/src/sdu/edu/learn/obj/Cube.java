@@ -8,6 +8,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import sdu.edu.learn.scene.Ray;
 import sdu.edu.learn.scene.RayFactory;
+import sdu.edu.learn.util.Matrix;
 
 /**
  * 立方体
@@ -26,9 +27,12 @@ public class Cube extends Multilateral {
 	private float scales[] = new float[3];
 	private float vertices[];
 	private float textureCoordinats[];
+	private float rotateMatrix[];
 
 	private FloatBuffer textCoordinats;
 	private FloatBuffer vertexs;
+
+	private Matrix matrix;
 
 	public Cube(float x, float y, float z) {
 		center[0] = x;
@@ -61,6 +65,8 @@ public class Cube extends Multilateral {
 	 * 初始化
 	 */
 	private void init() {
+		rotateMatrix = new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,
+				0, 1 };
 		vertices = new float[] { -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f,
 				1.0f, 1.0f, 1.0f, -1.0f, 1.0f,
 
@@ -100,6 +106,7 @@ public class Cube extends Multilateral {
 	@Override
 	public void onDraw(GL10 gl) {
 		// TODO Auto-generated method stub
+
 		gl.glFrontFace(GL10.GL_CCW);
 		gl.glEnable(GL10.GL_CULL_FACE);
 		gl.glCullFace(GL10.GL_BACK);
@@ -110,9 +117,10 @@ public class Cube extends Multilateral {
 		gl.glTranslatef(translateCoordinats[0], translateCoordinats[1],
 				translateCoordinats[2]);
 		gl.glTranslatef(center[0], center[1], center[2]);
-		gl.glRotatef(rotateAngles[2], 0, 0, 1);
-		gl.glRotatef(rotateAngles[1], 0, 1, 0);
-		gl.glRotatef(rotateAngles[0], 1, 0, 0);
+		// gl.glRotatef(rotateAngles[2], 0, 0, 1);
+		// gl.glRotatef(rotateAngles[1], 0, 1, 0);
+		// gl.glRotatef(rotateAngles[0], 1, 0, 0);
+		gl.glMultMatrixf(rotateMatrix, 0);
 		gl.glScalef(scales[0], scales[1], scales[2]);
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
@@ -202,6 +210,61 @@ public class Cube extends Multilateral {
 	}
 
 	@Override
+	public void rotate(float x, float y, float z, float angle) {
+		// TODO Auto-generated method stub
+		float len = x * x + y * y + z * z;
+		len = (float) Math.sqrt(len);
+		float a = angle / 180 * Sphere.pi;
+		float cosA = (float) Math.cos(a);
+		float sinA = (float) Math.sin(a);
+		float x1 = x / len;
+		float y1 = y / len;
+		float z1 = z / len;
+
+		float m00 = cosA + (1 - cosA) * x1 * x1;
+		float m01 = (1 - cosA) * x1 * y1 - sinA * z1;
+		float m02 = (1 - cosA) * x1 * z1 + sinA * y1;
+
+		float m10 = (1 - cosA) * x1 * y1 + sinA * z1;
+		float m11 = cosA + (1 - cosA) * y1 * y1;
+		float m12 = (1 - cosA) * y1 * z1 - sinA * x1;
+
+		float m20 = (1 - cosA) * x1 * z1 - sinA * y1;
+		float m21 = (1 - cosA) * y1 * z1 + sinA * x1;
+		float m22 = cosA + (1 - cosA) * z1 * z1;
+
+		float M00 = rotateMatrix[0];
+		float M01 = rotateMatrix[1];
+		float M02 = rotateMatrix[2];
+
+		float M10 = rotateMatrix[4];
+		float M11 = rotateMatrix[5];
+		float M12 = rotateMatrix[6];
+
+		float M20 = rotateMatrix[8];
+		float M21 = rotateMatrix[9];
+		float M22 = rotateMatrix[10];
+
+		rotateMatrix[0] = m00 * M00 + m01 * M10 + m02 * M20;
+		rotateMatrix[1] = m00 * M01 + m01 * M11 + m02 * M21;
+		rotateMatrix[2] = m00 * M02 + m01 * M12 + m02 * M22;
+		rotateMatrix[3] = 0;
+		rotateMatrix[4] = m10 * M00 + m11 * M10 + m12 * M20;
+		rotateMatrix[5] = m10 * M01 + m11 * M11 + m12 * M21;
+		rotateMatrix[6] = m10 * M02 + m11 * M12 + m12 * M22;
+		rotateMatrix[7] = 0;
+		rotateMatrix[8] = m20 * M00 + m21 * M10 + m22 * M20;
+		rotateMatrix[9] = m20 * M01 + m21 * M11 + m22 * M21;
+		rotateMatrix[10] = m20 * M02 + m21 * M12 + m22 * M22;
+		rotateMatrix[11] = 0;
+		rotateMatrix[12] = 0;
+		rotateMatrix[13] = 0;
+		rotateMatrix[14] = 0;
+		rotateMatrix[15] = 1;
+
+	}
+
+	@Override
 	public int intersect(Ray ray) {
 		// TODO Auto-generated method stub
 		if (ray == null) {
@@ -277,9 +340,13 @@ public class Cube extends Multilateral {
 		origin[1] -= translateCoordinats[1] + center[1];
 		origin[2] -= translateCoordinats[2] + center[2];
 
-		float rotateX = rotateAngles[0] / 180 * Sphere.pi;
-		float rotateY = rotateAngles[1] / 180 * Sphere.pi;
-		float rotateZ = rotateAngles[2] / 180 * Sphere.pi;
+		matrix = new Matrix(rotateMatrix, 4);
+		Matrix invMatrix = matrix.matrixInv();
+		float[] inv = invMatrix.getData();
+
+		// float rotateX = rotateAngles[0] / 180 * Sphere.pi;
+		// float rotateY = rotateAngles[1] / 180 * Sphere.pi;
+		// float rotateZ = rotateAngles[2] / 180 * Sphere.pi;
 
 		float directX = direct[0];
 		float directY = direct[1];
@@ -289,61 +356,70 @@ public class Cube extends Multilateral {
 		float originY = origin[1];
 		float originZ = origin[2];
 
-		/**
-		 * 绕z轴倒转
-		 */
+		// /**
+		// * 绕z轴倒转
+		// */
+		//
+		// direct[0] = (float) Math.cos(rotateZ) * directX
+		// + (float) Math.sin(rotateZ) * directY;
+		// direct[1] = -(float) Math.sin(rotateZ) * directX
+		// + (float) Math.cos(rotateZ) * directY;
+		//
+		// origin[0] = (float) Math.cos(rotateZ) * originX
+		// + (float) Math.sin(rotateZ) * originY;
+		// origin[1] = -(float) Math.sin(rotateZ) * originX
+		// + (float) Math.cos(rotateZ) * originY;
+		//
+		// directX = direct[0];
+		// directY = direct[1];
+		// directZ = direct[2];
+		//
+		// originX = origin[0];
+		// originY = origin[1];
+		// originZ = origin[2];
+		//
+		// /**
+		// * 绕y轴倒转
+		// */
+		// direct[0] = (float) Math.cos(rotateY) * directX
+		// - (float) Math.sin(rotateY) * directZ;
+		// direct[2] = (float) Math.sin(rotateY) * directX
+		// + (float) Math.cos(rotateY) * directZ;
+		//
+		// origin[0] = (float) Math.cos(rotateY) * originX
+		// - (float) Math.sin(rotateY) * originZ;
+		// origin[2] = (float) Math.sin(rotateY) * originX
+		// + (float) Math.cos(rotateY) * originZ;
+		//
+		// directX = direct[0];
+		// directY = direct[1];
+		// directZ = direct[2];
+		//
+		// originX = origin[0];
+		// originY = origin[1];
+		// originZ = origin[2];
+		//
+		// /**
+		// * 绕x轴倒转
+		// */
+		// direct[1] = (float) Math.cos(rotateX) * directY
+		// + (float) Math.sin(rotateX) * directZ;
+		// direct[2] = (float) -Math.sin(rotateX) * directY
+		// + (float) Math.cos(rotateX) * directZ;
+		//
+		// origin[1] = (float) Math.cos(rotateX) * originY
+		// + (float) Math.sin(rotateX) * originZ;
+		// origin[2] = (float) -Math.sin(rotateX) * originY
+		// + (float) Math.cos(rotateX) * originZ;
 
-		direct[0] = (float) Math.cos(rotateZ) * directX
-				+ (float) Math.sin(rotateZ) * directY;
-		direct[1] = -(float) Math.sin(rotateZ) * directX
-				+ (float) Math.cos(rotateZ) * directY;
+		direct[0] = inv[0] * directX + inv[1] * directY + inv[2] * directZ;
+		direct[1] = inv[4] * directX + inv[5] * directY + inv[6] * directZ;
+		direct[2] = inv[8] * directX + inv[9] * directY + inv[10] * directZ;
 
-		origin[0] = (float) Math.cos(rotateZ) * originX
-				+ (float) Math.sin(rotateZ) * originY;
-		origin[1] = -(float) Math.sin(rotateZ) * originX
-				+ (float) Math.cos(rotateZ) * originY;
+		origin[0] = inv[0] * originX + inv[1] * originY + inv[2] * originZ;
+		origin[1] = inv[4] * originX + inv[5] * originY + inv[6] * originZ;
+		origin[2] = inv[8] * originX + inv[9] * originY + inv[10] * originZ;
 
-		directX = direct[0];
-		directY = direct[1];
-		directZ = direct[2];
-
-		originX = origin[0];
-		originY = origin[1];
-		originZ = origin[2];
-
-		/**
-		 * 绕y轴倒转
-		 */
-		direct[0] = (float) Math.cos(rotateY) * directX
-				- (float) Math.sin(rotateY) * directZ;
-		direct[2] = (float) Math.sin(rotateY) * directX
-				+ (float) Math.cos(rotateY) * directZ;
-
-		origin[0] = (float) Math.cos(rotateY) * originX
-				- (float) Math.sin(rotateY) * originZ;
-		origin[2] = (float) Math.sin(rotateY) * originX
-				+ (float) Math.cos(rotateY) * originZ;
-
-		directX = direct[0];
-		directY = direct[1];
-		directZ = direct[2];
-
-		originX = origin[0];
-		originY = origin[1];
-		originZ = origin[2];
-
-		/**
-		 * 绕x轴倒转
-		 */
-		direct[1] = (float) Math.cos(rotateX) * directY
-				+ (float) Math.sin(rotateX) * directZ;
-		direct[2] = (float) -Math.sin(rotateX) * directY
-				+ (float) Math.cos(rotateX) * directZ;
-
-		origin[1] = (float) Math.cos(rotateX) * originY
-				+ (float) Math.sin(rotateX) * originZ;
-		origin[2] = (float) -Math.sin(rotateX) * originY
-				+ (float) Math.cos(rotateX) * originZ;
 		/**
 		 * 还原缩放
 		 */

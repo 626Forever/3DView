@@ -25,6 +25,7 @@ public class Sphere extends Multilateral {
 	private float translateCoordinats[] = new float[3];
 	private float rotateAngles[] = new float[3];
 	private float scales[] = new float[3];
+	private float rotateMatrix[];
 
 	private FloatBuffer textCoordinats;
 	private FloatBuffer vertexs;
@@ -45,6 +46,9 @@ public class Sphere extends Multilateral {
 	}
 
 	private void init() {
+		rotateMatrix = new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,
+				0, 1 };
+
 		float span = pi / 20;
 		ArrayList<Float> alVertex = new ArrayList<Float>();
 		for (float angleY = -pi / 2 + span; angleY <= pi / 2; angleY += span) {
@@ -110,9 +114,7 @@ public class Sphere extends Multilateral {
 		gl.glTranslatef(translateCoordinats[0], translateCoordinats[1],
 				translateCoordinats[2]);
 		gl.glTranslatef(center[0], center[1], center[2]);
-		gl.glRotatef(rotateAngles[0], 1, 0, 0);
-		gl.glRotatef(rotateAngles[1], 0, 1, 0);
-		gl.glRotatef(rotateAngles[2], 0, 0, 1);
+		gl.glMultMatrixf(rotateMatrix, 0);
 		gl.glScalef(scales[0], scales[1], scales[2]);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY); // 启用顶点坐标数组
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY); // 启用顶点向量数组
@@ -171,6 +173,59 @@ public class Sphere extends Multilateral {
 	public void rotateZ(float angle) {
 		// TODO Auto-generated method stub
 		this.rotateAngles[2] += angle;
+	}
+
+	@Override
+	public void rotate(float x, float y, float z, float angle) {
+		// TODO Auto-generated method stub
+		float len = x * x + y * y + z * z;
+		len = (float) Math.sqrt(len);
+		float a = angle / 180 * Sphere.pi;
+		float cosA = (float) Math.cos(a);
+		float sinA = (float) Math.sin(a);
+		float x1 = x / len;
+		float y1 = y / len;
+		float z1 = z / len;
+		float m00 = cosA + (1 - cosA) * x1 * x1;
+		float m01 = (1 - cosA) * x1 * y1 - sinA * z1;
+		float m02 = (1 - cosA) * x1 * z1 + sinA * y1;
+
+		float m10 = (1 - cosA) * x1 * y1 + sinA * z1;
+		float m11 = cosA + (1 - cosA) * y1 * y1;
+		float m12 = (1 - cosA) * y1 * z1 - sinA * x1;
+
+		float m20 = (1 - cosA) * x1 * z1 - sinA * y1;
+		float m21 = (1 - cosA) * y1 * z1 + sinA * x1;
+		float m22 = cosA + (1 - cosA) * z1 * z1;
+
+		float M00 = rotateMatrix[0];
+		float M01 = rotateMatrix[1];
+		float M02 = rotateMatrix[2];
+
+		float M10 = rotateMatrix[4];
+		float M11 = rotateMatrix[5];
+		float M12 = rotateMatrix[6];
+
+		float M20 = rotateMatrix[8];
+		float M21 = rotateMatrix[9];
+		float M22 = rotateMatrix[10];
+
+		rotateMatrix[0] = m00 * M00 + m01 * M10 + m02 * M20;
+		rotateMatrix[1] = m00 * M01 + m01 * M11 + m02 * M21;
+		rotateMatrix[2] = m00 * M02 + m01 * M12 + m02 * M22;
+		rotateMatrix[3] = 0;
+		rotateMatrix[4] = m10 * M00 + m11 * M10 + m12 * M20;
+		rotateMatrix[5] = m10 * M01 + m11 * M11 + m12 * M21;
+		rotateMatrix[6] = m10 * M02 + m11 * M12 + m12 * M22;
+		rotateMatrix[7] = 0;
+		rotateMatrix[8] = m20 * M00 + m21 * M10 + m22 * M20;
+		rotateMatrix[9] = m20 * M01 + m21 * M11 + m22 * M21;
+		rotateMatrix[10] = m20 * M02 + m21 * M12 + m22 * M22;
+		rotateMatrix[11] = 0;
+		rotateMatrix[12] = 0;
+		rotateMatrix[13] = 0;
+		rotateMatrix[14] = 0;
+		rotateMatrix[15] = 1;
 	}
 
 	@Override

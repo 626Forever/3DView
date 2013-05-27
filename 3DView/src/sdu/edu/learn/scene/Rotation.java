@@ -50,19 +50,20 @@ public class Rotation {
 				+ (previousY - presentY) * (previousY - presentY);
 		axisLength = (float) Math.sqrt(axisLength);
 		axis[3] = axisLength / (viewPort[3] - viewPort[1]) * 360;
-
-		float x = axis[0];
-		float y = axis[1];
-		if (Math.abs(x) > Math.abs(y)) {
+		if (Math.abs(axis[0]) > Math.abs(axis[1])) {
+			float temp = axis[0];
 			axis[0] = 0;
 			axis[1] = 1;
-			if (x < 0)
+			if (temp < 0) {
 				axis[3] = -axis[3];
+			}
 		} else {
+			float temp = axis[1];
 			axis[0] = 1;
 			axis[1] = 0;
-			if (y < 0)
+			if (temp > 0) {
 				axis[3] = -axis[3];
+			}
 		}
 
 		return axis;

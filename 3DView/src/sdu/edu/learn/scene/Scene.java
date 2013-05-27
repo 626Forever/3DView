@@ -27,6 +27,8 @@ import android.view.MotionEvent;
  */
 public class Scene implements Renderer {
 	private Context parent;
+
+	private Rotation rotation;
 	/**
 	 * 保存多边体对象的线性表
 	 */
@@ -35,10 +37,10 @@ public class Scene implements Renderer {
 	/**
 	 * 保存一些可用的纹理id
 	 */
-	int[] textures = new int[10];
+	private int[] textures = new int[10];
 
 	// 定义环境光
-	private FloatBuffer lightAmbient = FloatBuffer.wrap(new float[] {1.0f,
+	private FloatBuffer lightAmbient = FloatBuffer.wrap(new float[] { 1.0f,
 			1.0f, 1.0f, 1.0f });
 	// 定义漫射光
 	private FloatBuffer lightDiffuse = FloatBuffer.wrap(new float[] { 1.0f,
@@ -54,25 +56,24 @@ public class Scene implements Renderer {
 		this.parent = parent;
 
 		Cube c = new Cube(0, 0, -4);
-		c.rotateX(45);
-		c.rotateY(45);
+//		c.rotate(1, 0, 0, 45);
+//		c.rotate(0, 1, 0, 45);
 		c.scale(0.5f, 0.5f, 0.5f);
 		objs.add(c);
 
 		c = new Cube(3, -1, -8);
-		c.rotateX(65);
-		c.rotateY(75);
-		c.rotateZ(109);
+//		c.rotate(1, 0, 0, 45);
+//		c.rotate(0, 1, 0, 45);
 		c.scale(0.5f, 0.5f, 0.5f);
 		objs.add(c);
 
 		Sphere s = new Sphere(new float[] { 1, 1, -6 }, 0.4f);
-		s.rotateX(-90);
+		//s.rotate(1, 0, 0, 90);
 		objs.add(s);
 		s = new Sphere(new float[] { -5, -4, -10 }, 0.4f);
-		s.rotateX(-90);
+		//s.rotate(1, 0, 0, 90);
 		objs.add(s);
-
+		rotation = new Rotation();
 	}
 
 	/**
@@ -174,6 +175,7 @@ public class Scene implements Renderer {
 		float zFar = 100.0f;
 		GLU.gluPerspective(gl, foxy, (float) width / (float) height, zNear,
 				zFar);
+		rotation.setViewPort(new float[] { 0, 0, width, height }, zNear, foxy);
 		RayFactory.setFoxy(foxy);
 		RayFactory.setzNear(zNear);
 		RayFactory.setzFar(zFar);
@@ -218,7 +220,7 @@ public class Scene implements Renderer {
 	 * @param event
 	 * @return
 	 */
-	public boolean onTouch(MotionEvent event) {
+	public boolean onTouchMove(MotionEvent event) {
 		float x = event.getX();
 		float y = event.getY();
 		/**
@@ -247,6 +249,39 @@ public class Scene implements Renderer {
 		}
 		return true;
 
+	}
+
+	public boolean onTouchRotation(MotionEvent event) {
+		float x = event.getX();
+		float y = event.getY();
+		/**
+		 * 设置射线工厂最新的屏幕坐标
+		 */
+		RayFactory.setTouchPostion(new float[] { x, y });
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			RayFactory.setPickful(true);// 检测拾取
+			rotation.clear(x, y);
+			break;
+		case MotionEvent.ACTION_UP:
+			RayFactory.setPickful(false);// 取消拾取
+			for (int i = 0; i < objs.size(); i++) {
+				objs.get(i).setPicked(false);
+			}
+			break;
+		case MotionEvent.ACTION_MOVE:
+			RayFactory.setPickful(false);// 取消拾取，移动被拾取到的对象
+			rotation.setPresent(x, y);
+			for (int i = 0; i < objs.size(); i++) {
+				Multilateral m = objs.get(i);
+				if (m.isPicked()) {
+					float axis[] = rotation.getRotationAxisAndAngle();
+					m.rotate(axis[0], axis[1], axis[2], axis[3]);
+				}
+			}
+			break;
+		}
+		return true;
 	}
 
 	/**

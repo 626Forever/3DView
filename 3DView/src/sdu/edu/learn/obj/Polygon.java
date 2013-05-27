@@ -137,4 +137,10 @@ public class Polygon implements PolygonObject {
 
 	}
 
+	@Override
+	public void rotate(float x, float y, float z, float angle) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
