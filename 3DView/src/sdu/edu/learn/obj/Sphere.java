@@ -30,6 +30,8 @@ public class Sphere extends Multilateral {
 	private FloatBuffer textCoordinats;
 	private FloatBuffer vertexs;
 	private FloatBuffer nomalBuffer;
+	private FloatBuffer colorBuffer;
+	
 
 	public Sphere(float[] center, float radius) {
 		this.radius = radius;
@@ -86,6 +88,8 @@ public class Sphere extends Multilateral {
 				alVertex.add(z);
 			}
 		}
+		
+		
 		textureCoordinats = new float[alVertex.size()];
 
 		vCount = alVertex.size() / 12;
@@ -93,6 +97,24 @@ public class Sphere extends Multilateral {
 		for (int i = 0; i < alVertex.size(); i++) {
 			vertices[i] = alVertex.get(i);
 		}
+		
+		ArrayList<Float> alColor = new ArrayList<Float>();
+		for(int i=0;i<alVertex.size() / 3;i++){
+			float R=0.5f;
+			float G=0.5f;
+			float B=0.5f;
+			float M=1.0f;
+			alColor.add(R);
+			alColor.add(G);
+			alColor.add(B);
+			alColor.add(M);
+		}
+		
+		float colors[] = new float[alColor.size()];
+		for (int i = 0; i < alColor.size(); i++) {
+			colors[i] = alColor.get(i);
+		}
+		
 		ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
 		vbb.order(ByteOrder.nativeOrder());
 		vertexs = vbb.asFloatBuffer();
@@ -104,13 +126,19 @@ public class Sphere extends Multilateral {
 		nomalBuffer = nbb.asFloatBuffer(); // 转换成int型缓冲
 		nomalBuffer.put(vertices); // 想缓冲区放入顶点坐标数据
 		nomalBuffer.position(0); // 设置缓冲区起始位置
-
-		ByteBuffer nb = ByteBuffer.allocateDirect(textureCoordinats.length * 4); // 一个整型是4个字节
+		
+		ByteBuffer cbb = ByteBuffer.allocateDirect(colors.length * 4); // 一个整型是4个字节
+		cbb.order(ByteOrder.nativeOrder()); // 设置字节顺序
+		colorBuffer = cbb.asFloatBuffer(); // 转换成int型缓冲
+		colorBuffer.put(colors); // 想缓冲区放入顶点坐标数据
+		colorBuffer.position(0); // 设置缓冲区起始位置
+		
+		/*ByteBuffer nb = ByteBuffer.allocateDirect(textureCoordinats.length * 4); // 一个整型是4个字节
 		nb.order(ByteOrder.nativeOrder()); // 设置字节顺序
 		textCoordinats = nb.asFloatBuffer(); // 转换成int型缓冲
 		textCoordinats.put(vertices); // 想缓冲区放入顶点坐标数据
 		textCoordinats.position(0); // 设置缓冲区起始位置
-	}
+*/	}
 
 	@Override
 	public void onDraw(GL10 gl) {
@@ -124,15 +152,22 @@ public class Sphere extends Multilateral {
 		gl.glScalef(scales[0], scales[1], scales[2]);
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY); // 启用顶点坐标数组
 		gl.glEnableClientState(GL10.GL_NORMAL_ARRAY); // 启用顶点向量数组
+		gl.glEnableClientState(GL10.GL_COLOR_ARRAY); 
 
 		// 为画笔指定顶点坐标数据
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexs);
 		// 为画笔指定顶点向量数据
 		gl.glNormalPointer(GL10.GL_FLOAT, 0, vertexs);
+		
+		gl.glColorPointer(4, GL10.GL_FLOAT, 0, colorBuffer);
 		// 绘制图形
-		for (int i = 0; i < vCount; i++) {
+		
+		for (int i = 0; i < vCount; i++) {		
 			gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, i * 4, 4);
-		}
+
+		}    
+		
+		
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
 		gl.glPopMatrix();
 	}

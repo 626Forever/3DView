@@ -206,6 +206,19 @@ public class Scene implements Renderer {
 		// 开启ID号为GL_LIGHT1的光源
 		gl.glEnable(GL10.GL_LIGHT1);
 
+		 //设置环境光，为白色材质  
+        float [] ambientMaterial={0.4f,0.4f,0.4f,1.0f};  
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, ambientMaterial,0);  
+        //设置散射光白色  
+        float [] diffuseMaterial={0.8f,0.8f,0.8f,1.0f};  
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, diffuseMaterial, 0);  
+        //高光材质为白色            
+        float [] specularMaterial={1.0f,1.0f,1.0f,1.0f};  
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SPECULAR, specularMaterial, 0);  
+        //高光反色区，数越大，高亮区域越小、越暗 
+        float [] shininessMaterial={1.5f};  
+        gl.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_SHININESS, shininessMaterial,0);
+		
 		Bitmap bitmap = BitmapFactory.decodeResource(parent.getResources(),
 				R.drawable.fn);
 		loadTexture(gl, bitmap);

@@ -13,7 +13,7 @@ import sdu.edu.learn.util.Matrix;
 /**
  * Α’·½Με
  * 
- * @author lhy
+ * @author hzy,lhy
  * 
  */
 public class Cube extends Multilateral {
